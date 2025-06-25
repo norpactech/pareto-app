@@ -8,8 +8,8 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { Observable } from 'rxjs';
 import { map, take, switchMap } from 'rxjs/operators';
 import { CognitoAuthService } from '../services/cognito-auth.service';
-import { UserService } from '../../shared/services/user.service';
-import { User } from '../../shared/models/user.dto';
+import { UserService } from '@shared/service';
+import { IUser } from '@shared/model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export class ProfileCompleteGuard implements CanActivate {
           map(result => {
 
               // Check if any user profile exists
-            const userProfile: User | null = result.data && result.data.length > 0 ? result.data[0] : null;
+            const userProfile: IUser | null = result.data && result.data.length > 0 ? result.data[0] : null;
             
             if (!userProfile) {
 

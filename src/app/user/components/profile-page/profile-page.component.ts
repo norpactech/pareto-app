@@ -10,9 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
-import { UserService } from '../../../shared/services/user.service';
+import { UserService } from '@shared/service/user.service';
 import { CognitoAuthService } from '../../../auth/services/cognito-auth.service';
-import { User } from '../../../shared/models/user.dto';
+import { IUser } from '@shared/model';
 import { take, switchMap, map } from 'rxjs/operators';
 
 @Component({
@@ -312,7 +312,7 @@ export class ProfilePageComponent implements OnInit {
   // Track whether user has a profile or needs to create one
   hasProfile = false;
   isLoading = true;
-  currentUser: User | null = null;
+  currentUser: IUser | null = null;
   ngOnInit(): void {
     this.checkUserProfile();
   }  private checkUserProfile(): void {
@@ -326,7 +326,7 @@ export class ProfilePageComponent implements OnInit {
         }
         const params = { email: authState.user.email };
         return this.userService.find(params).pipe(
-          map((result: { data: User[]; total: number }) => ({ result, authenticatedEmail: authState.user?.email }))
+          map((result: { data: IUser[]; total: number }) => ({ result, authenticatedEmail: authState.user?.email }))
         );
       })
     ).subscribe({
@@ -383,7 +383,7 @@ export class ProfilePageComponent implements OnInit {
       }
     });
   }
-  onProfileCreated(result: User): void {
+  onProfileCreated(result: IUser): void {
     console.log('Profile created successfully:', result);
     this.hasProfile = true;
     this.currentUser = result;

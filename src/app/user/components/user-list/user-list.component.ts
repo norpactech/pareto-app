@@ -12,8 +12,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
-import { UserService } from '../../../shared/services/user.service';
-import { User } from '../../../shared/models/user.dto';
+import { UserService } from '@shared/service';
+import { IUser } from '../../../shared/model/user.dto';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 @Component({
@@ -37,7 +37,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  users: User[] = [];
+  users: IUser[] = [];
   isLoading = false;
   displayedColumns: string[] = ['name', 'email', 'phone', 'lastUpdated', 'actions'];
   private destroy$ = new Subject<void>();
@@ -55,7 +55,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.userService.find({})
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (result: { data: User[]; total: number }) => {
+        next: (result: { data: IUser[]; total: number }) => {
           this.users = result.data;
           this.isLoading = false;
         },
@@ -67,7 +67,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       });
   }
 
-  openUserProfile(user?: User): void {
+  openUserProfile(user?: IUser): void {
     const dialogRef = this.dialog.open(UserProfileComponent, {
       width: '500px',
       maxWidth: '90vw',
@@ -82,7 +82,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       }
     });
   }
-  deleteUser(user: User): void {
+  deleteUser(user: IUser): void {
     if (confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`)) {
       this.userService.delete({ id: user.id })
         .pipe(takeUntil(this.destroy$))
@@ -114,7 +114,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFullName(user: User): string {
+  getFullName(user: IUser): string {
     return `${user.firstName} ${user.lastName}`;
   }
 }

@@ -9,10 +9,11 @@ import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, take, switchMap } from 'rxjs';
-import { UserService } from '@shared/services';
-import { User, UpdateUserRequest } from '@shared/models';
-import { IPersistResponse } from '@shared/services/model';
+import { UserService } from '@shared/service';
+import { IUser } from '@app/shared/model';
+import { IPersistResponse } from '@shared/service/model';
 import { CognitoAuthService } from '../../../auth/services/cognito-auth.service';
+import { IUserPutDTO } from '@app/shared/dto/user';
 
 @Component({
   selector: 'app-user-profile',
@@ -33,11 +34,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private authService = inject(CognitoAuthService);
   private router = inject(Router);
 
-  @Output() profileSaved = new EventEmitter<User>();
+  @Output() profileSaved = new EventEmitter<IUser>();
   @Output() cancelled = new EventEmitter<void>();
 
   profileForm: FormGroup;
-  currentUser: User | null = null;
+  currentUser: IUser | null = null;
   isLoading = false;
   isSaving = false;
   private destroy$ = new Subject<void>();
@@ -150,7 +151,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }  onSave(): void {
     if (this.profileForm.valid) {
       this.isSaving = true;      if (this.currentUser) {        // Update existing user - use original updatedAt for soft locking
-        const updateData: UpdateUserRequest = {
+        const updateData: IUserPutDTO = {
           ...this.profileForm.value,
           id: this.currentUser.id,
           email: this.profileForm.get('email')?.value || this.currentUser.email,
@@ -213,11 +214,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.isSaving = false;
     
     // Emit event for parent component - pass the current user with updates
-    const updatedUser: User = {
+    const updatedUser: IUser = {
       ...this.currentUser,
       ...this.profileForm.value,
       id: response.id || this.currentUser?.id
-    } as User;
+    } as IUser;
     
     this.profileSaved.emit(updatedUser);
     

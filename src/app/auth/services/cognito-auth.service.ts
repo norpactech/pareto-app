@@ -25,9 +25,9 @@ import {
   GetUserResponse,
   AuthenticationResultType
 } from '@aws-sdk/client-cognito-identity-provider';
-import { environment } from '../../../environments/environment';
-import { UserService } from '../../shared/services/user.service';
-import { IUser } from '../../shared/models';
+import { environment } from '@environments/environment';
+import { UserService } from '@shared/service';
+import { IUser } from '@shared/model';
 
 export interface CognitoConfig {
   region: string;

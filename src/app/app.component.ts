@@ -10,11 +10,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ThemeService } from './shared/services/theme.service';
+import { ThemeService } from '@shared/service/theme.service';
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service';
 import { UserProfileComponent } from './user/components/user-profile/user-profile.component';
-import { UserService } from './shared/services/user.service';
-import { User } from './shared/models/user.dto';
+import { UserService } from '@shared/service';
+import { IUser } from '@shared/model/user.dto';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -160,7 +160,7 @@ export class AppComponent implements OnInit {
     console.log('AppComponent: Checking profile for email:', email);
     const params = { email: email };
     this.userService.find(params).subscribe({
-      next: (result: { data: User[]; total: number }) => {
+      next: (result: { data: IUser[]; total: number }) => {
         console.log('AppComponent: Profile check result:', result);
         // Check if any user profile exists
         const userProfile = result.data && result.data.length > 0 ? result.data[0] : null;

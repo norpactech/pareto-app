@@ -4,7 +4,7 @@
  */
 
 import { Injectable, inject } from '@angular/core'
-import { RefTablesService, RefTableTypeService } from '@shared/services'
+import { RefTablesService, RefTableTypeService } from '@shared/service'
 import { Observable, throwError } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
@@ -32,10 +32,11 @@ export class TableUtils {
    * @returns Observable of id/name list.
    */
   findRefTable(refTableTypeName: string): Observable<{ id: string; name: string }[]> {
-    const params = {
+    const params: Record<string, unknown> = {
       searchColumn: 'name',
       searchValue: refTableTypeName,
     }
+
     return this.refTableTypeService.find(params).pipe(
       map((response) => response.data?.[0] as IRefTableType | null),
       switchMap((refTableType) => {

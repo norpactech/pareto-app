@@ -18,10 +18,9 @@
     "baseUrl": "./",    "paths": {
       "@app/*": ["src/app/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@shared/dialogs": ["src/app/shared/dialogs"],
       "@shared/dialogs/*": ["src/app/shared/dialogs/*"],
-      "@shared/services/*": ["src/app/shared/services/*"],
-      "@shared/models/*": ["src/app/shared/models/*"],
+      "@shared/model/*": ["src/app/shared/model/*"],
+      "@shared/service/*": ["src/app/shared/service/*"],
       "@shared/utils/*": ["src/app/shared/utils/*"],
       "@shared/enums/*": ["src/app/shared/enums/*"],
       "@environments/*": ["src/environments/*"],
