@@ -1,0 +1,141 @@
+<div class="help-container">
+  <div class="help-content">
+    <mat-card class="help-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="help-icon">help_center</mat-icon>
+          Help & Support
+        </mat-card-title>
+        <mat-card-subtitle>
+          Get assistance with using the Pareto UI application
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <mat-accordion>
+          <!-- Getting Started -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>rocket_launch</mat-icon>
+                Getting Started
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="help-section">
+              <h3>Welcome to Pareto UI</h3>
+              <p>This application provides a modern interface for managing users and authentication. Here's how to get started:</p>
+              <ul>
+                <li><strong>Sign Up:</strong> Create a new account using the Sign Up button</li>
+                <li><strong>Sign In:</strong> Access your account with existing credentials</li>
+                <li><strong>Navigation:</strong> Use the hamburger menu to explore different sections</li>
+                <li><strong>Theme:</strong> Toggle between light and dark modes (when signed in)</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Authentication -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>security</mat-icon>
+                Authentication
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="help-section">
+              <h3>Account Management</h3>
+              <p>Learn how to manage your account and security settings:</p>
+              <ul>
+                <li><strong>Password Reset:</strong> Use "Forgot Password" if you can't sign in</li>
+                <li><strong>Email Verification:</strong> Check your email after signing up</li>
+                <li><strong>Account Security:</strong> Your session will automatically expire for security</li>
+                <li><strong>Remember Me:</strong> Check this option to stay signed in longer</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- User Management -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>people</mat-icon>
+                User Management
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="help-section">
+              <h3>Managing Users</h3>
+              <p>Administrative features for user management:</p>
+              <ul>
+                <li><strong>User List:</strong> View all users in the system</li>
+                <li><strong>User Profiles:</strong> Click the user icon to view/edit your profile</li>
+                <li><strong>User Actions:</strong> Add, edit, or remove users (with proper permissions)</li>
+                <li><strong>Search & Filter:</strong> Find specific users quickly</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Interface -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>web</mat-icon>
+                Interface Guide
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="help-section">
+              <h3>Using the Interface</h3>
+              <p>Tips for navigating the application interface:</p>
+              <ul>
+                <li><strong>Responsive Design:</strong> Works on desktop, tablet, and mobile devices</li>
+                <li><strong>Hamburger Menu:</strong> Click the ☰ icon to open navigation</li>
+                <li><strong>Material Design:</strong> Clean, modern interface following Google's Material Design</li>
+                <li><strong>Accessibility:</strong> Keyboard navigation and screen reader support</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Troubleshooting -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>build</mat-icon>
+                Troubleshooting
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="help-section">
+              <h3>Common Issues</h3>
+              <p>Solutions to frequently encountered problems:</p>
+              <ul>
+                <li><strong>Can't Sign In:</strong> Check your credentials and use "Forgot Password" if needed</li>
+                <li><strong>Page Not Loading:</strong> Refresh the browser or check your internet connection</li>
+                <li><strong>Menu Not Working:</strong> Try refreshing the page or clearing browser cache</li>
+                <li><strong>Mobile Issues:</strong> Ensure you're using a supported browser</li>
+              </ul>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <div class="contact-section">
+          <h3>Need More Help?</h3>
+          <p>If you can't find what you're looking for, please contact our support team:</p>
+          <div class="contact-options">
+            <button mat-raised-button color="primary" class="contact-btn">
+              <mat-icon>email</mat-icon>
+              Email Support
+            </button>
+            <button mat-stroked-button color="primary" class="contact-btn">
+              <mat-icon>phone</mat-icon>
+              Call Support
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-button routerLink="/" class="back-btn">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Home
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,197 @@
+<div class="sign-up-container">
+  <!-- Sign Up Form -->  <div *ngIf="!showVerification" class="form-section">
+    <!-- Error Alert -->
+    <div class="alert alert-error" *ngIf="error">
+      <span class="material-icons icon-error">warning</span>
+      <span>{{ error }}</span>
+    </div>
+
+    <form [formGroup]="signUpForm" (ngSubmit)="onSignUp()" class="auth-form"><!-- Email Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <div class="input-container">
+          <span class="material-icons input-icon">email</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            [class.error]="isFieldInvalid(signUpForm, 'email')"
+            placeholder="Enter your email"
+            autocomplete="email"
+          />
+        </div>
+        <div class="field-error" *ngIf="isFieldInvalid(signUpForm, 'email')">
+          {{ getFieldError(signUpForm, 'email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-container">
+          <span class="material-icons input-icon">lock</span>
+          <input
+            id="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            class="form-input"
+            [class.error]="isFieldInvalid(signUpForm, 'password')"
+            placeholder="Create a password"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+          >
+            <span class="material-icons">{{ hidePassword ? 'visibility' : 'visibility_off' }}</span>
+          </button>
+        </div>
+        <div class="field-error" *ngIf="isFieldInvalid(signUpForm, 'password')">
+          {{ getFieldError(signUpForm, 'password') }}
+        </div>        <!-- Password Requirements -->
+        <div class="password-requirements" [class.all-requirements-met]="areAllPasswordRequirementsMet()">
+          <div class="requirements-title">Password must contain:</div>
+          <div class="requirement-list">
+            <div class="requirement-item" [class.met]="getPasswordRequirement('minLength')" [class.hide-when-met]="getPasswordRequirement('minLength')">>
+              <span class="material-icons">{{ getPasswordRequirement('minLength') ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              At least 8 characters
+            </div>
+            <div class="requirement-item" [class.met]="getPasswordRequirement('hasNumber')" [class.hide-when-met]="getPasswordRequirement('hasNumber')">>
+              <span class="material-icons">{{ getPasswordRequirement('hasNumber') ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              At least 1 number
+            </div>
+            <div class="requirement-item" [class.met]="getPasswordRequirement('hasUpper')" [class.hide-when-met]="getPasswordRequirement('hasUpper')">>
+              <span class="material-icons">{{ getPasswordRequirement('hasUpper') ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              At least 1 uppercase letter
+            </div>            <div class="requirement-item" [class.met]="getPasswordRequirement('hasLower')" [class.hide-when-met]="getPasswordRequirement('hasLower')">>
+              <span class="material-icons">{{ getPasswordRequirement('hasLower') ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              At least 1 lowercase letter
+            </div>
+            <div class="requirement-item" [class.met]="getPasswordRequirement('hasSpecial')" [class.hide-when-met]="getPasswordRequirement('hasSpecial')">>
+              <span class="material-icons">{{ getPasswordRequirement('hasSpecial') ? 'check_circle' : 'radio_button_unchecked' }}</span>
+              At least 1 special character (!&#64;#$%^&*...)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <div class="input-container">
+          <span class="material-icons input-icon">lock</span>
+          <input
+            id="confirmPassword"
+            [type]="hideConfirmPassword ? 'password' : 'text'"
+            formControlName="confirmPassword"
+            class="form-input"
+            [class.error]="isFieldInvalid(signUpForm, 'confirmPassword') || signUpForm.errors?.['passwordMismatch']"
+            placeholder="Confirm your password"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="hideConfirmPassword ? 'Show password' : 'Hide password'"
+          >
+            <span class="material-icons">{{ hideConfirmPassword ? 'visibility' : 'visibility_off' }}</span>
+          </button>
+        </div>
+        <div class="field-error" *ngIf="isFieldInvalid(signUpForm, 'confirmPassword') || signUpForm.errors?.['passwordMismatch']">
+          {{ getFieldError(signUpForm, 'confirmPassword') }}
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="loading || signUpForm.invalid"
+        [class.loading]="loading"
+      >
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading" class="loading-content">
+          <span class="material-icons spinner">hourglass_empty</span>
+          Creating account...
+        </span>
+      </button>
+    </form>
+
+    <!-- Sign In Link -->
+    <div class="auth-footer">
+      <p>
+        Already have an account? 
+        <a routerLink="/auth/signin" class="auth-link">Sign in here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Email Verification Section -->  <div *ngIf="showVerification" class="verification-section">
+    <!-- Error Alert -->
+    <div class="alert alert-error" *ngIf="error">
+      <span class="material-icons icon-error">warning</span>
+      <span>{{ error }}</span>
+    </div>
+
+    <form [formGroup]="verificationForm" (ngSubmit)="onVerifyCode()" class="auth-form">
+      <!-- Verification Code Field -->
+      <div class="form-group">
+        <label for="verificationCode" class="form-label">Verification Code</label>
+        <div class="input-container">
+          <span class="material-icons input-icon">verified_user</span>
+          <input
+            id="verificationCode"
+            type="text"
+            formControlName="verificationCode"
+            class="form-input verification-input"
+            [class.error]="isFieldInvalid(verificationForm, 'verificationCode')"
+            placeholder="Enter 6-digit code"
+            maxlength="6"
+            autocomplete="one-time-code"
+          />
+        </div>
+        <div class="field-error" *ngIf="isFieldInvalid(verificationForm, 'verificationCode')">
+          {{ getFieldError(verificationForm, 'verificationCode') }}
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="verification-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="loading || verificationForm.invalid"
+          [class.loading]="loading"
+        >
+          <span *ngIf="!loading">Verify Email</span>
+          <span *ngIf="loading" class="loading-content">
+            <span class="material-icons spinner">hourglass_empty</span>
+            Verifying...
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="resendCode()"
+          [disabled]="loading"
+        >
+          Resend Code
+        </button>
+
+        <button
+          type="button"
+          class="text-btn"
+          (click)="backToSignUp()"
+          [disabled]="loading"
+        >
+          Back to Sign Up
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="home-container">
+  <div class="hero-section">
+    <mat-card class="welcome-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="welcome-icon">home</mat-icon>
+          Welcome to the Pareto Starter Application
+        </mat-card-title>      </mat-card-header>
+      
+      <mat-card-content>        <!-- Welcome message for non-authenticated users -->
+        <p class="welcome-subtitle" *ngIf="(isAuthenticated$ | async) === false">
+          A modern Angular application starter with authentication, user management, and Material Design.
+          <br><br>
+          Get started by signing in to your account or creating a new one.
+          <br><br>
+          <small>© 2025 Northern Pacific Technologies, LLC. Licensed under the MIT License.</small>
+        </p>
+
+        <!-- Welcome message for authenticated users -->
+        <p class="welcome-subtitle" *ngIf="isAuthenticated$ | async">
+          Welcome back! You're successfully authenticated and ready to explore the application.
+          <br><br>
+          Access your dashboard, manage your profile, or explore the features available to you.
+          <br><br>
+          <small>© 2025 Northern Pacific Technologies, LLC. Licensed under the MIT License.</small>
+        </p>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <mat-icon>security</mat-icon>
+            <h3>Secure Authentication</h3>
+            <p>Complete authentication system with sign-in, sign-up, and password recovery.</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon>people</mat-icon>
+            <h3>User Management</h3>
+            <p>Comprehensive user management with profiles and CRUD operations.</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon>palette</mat-icon>
+            <h3>Material Design</h3>
+            <p>Beautiful, responsive UI with light/dark theme support.</p>
+          </div>
+          
+          <div class="feature-item">
+            <mat-icon>mobile_friendly</mat-icon>
+            <h3>Responsive Design</h3>
+            <p>Optimized for all devices with modern responsive layout.</p>
+          </div>
+        </div>      </mat-card-content>      <mat-card-actions class="action-buttons" *ngIf="(isAuthenticated$ | async) === false">
+        <button routerLink="/auth/signin" class="github-style-btn">
+          <mat-icon>login</mat-icon>
+          <span>Sign In</span>
+        </button>
+        <button routerLink="/auth/signup" class="github-style-btn">
+          <mat-icon>person_add</mat-icon>
+          <span>Sign Up</span>
+        </button>
+      </mat-card-actions>      <!-- Alternative content for authenticated users -->
+      <mat-card-actions class="action-buttons" *ngIf="isAuthenticated$ | async">
+        <button routerLink="/users/profile" class="github-style-btn">
+          <mat-icon>account_circle</mat-icon>
+          <span>My Profile</span>
+        </button>
+        <button routerLink="/users" class="github-style-btn">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>User Management</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

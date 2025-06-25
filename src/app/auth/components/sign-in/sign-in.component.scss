@@ -1,0 +1,322 @@
+.sign-in-container {
+  width: 100%;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+
+  &.alert-error {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+
+    .icon-error {
+      font-size: 20px;
+      color: #c62828;
+    }
+  }
+}
+
+.auth-form {
+  .form-group {
+    margin-bottom: 24px;
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }    .input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .input-icon {
+        position: absolute;
+        left: 12px;
+        z-index: 2;
+        font-size: 20px;
+        color: var(--text-secondary);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        border: 2px solid var(--surface-300);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        color: var(--text-primary);
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary-500);
+          box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1);
+        }
+
+        &.error {
+          border-color: #f44336;
+          
+          &:focus {
+            border-color: #f44336;
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+          }
+        }
+
+        &::placeholder {
+          color: var(--text-disabled);
+        }
+      }      .password-toggle {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        color: var(--text-secondary);
+
+        &:hover {
+          background: var(--surface-100);
+        }
+
+        .material-icons {
+          font-size: 20px;
+        }
+      }
+    }    .field-error {      color: #f44336;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      display: block;
+    }
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkmark {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      margin-right: 8px;
+      position: relative;
+      transition: all 0.2s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 5px;
+        width: 6px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+    }
+
+    input[type="checkbox"]:checked + .checkmark {
+      background-color: #3498db;
+      border-color: #3498db;
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    .checkbox-label {
+      font-size: 0.9rem;
+      color: #374151;
+    }
+  }
+
+  .forgot-link {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: var(--surface-400);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.loading {
+    pointer-events: none;
+    
+    .loading-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      
+      .spinner {
+        animation: spin 1s linear infinite;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.loading {
+    pointer-events: none;
+  }
+
+  .loading-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+.auth-footer {
+  text-align: center;
+
+  p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .auth-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .form-header {
+    margin-bottom: 24px;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .auth-form .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .submit-btn {
+    margin-bottom: 20px;
+  }
+}
+
+// Dark theme support
+:host-context(.dark-theme) {
+  .alert.alert-error {
+    background-color: #3c1f1f;
+    border-color: #5c2e2e;
+    color: #ef5350;
+    
+    .icon-error {
+      color: #ef5350;
+    }
+  }
+}

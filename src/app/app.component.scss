@@ -1,0 +1,720 @@
+// Material Design Variables using CSS custom properties
+:host {
+  --header-height: 64px;
+  --menu-width: 280px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius: 8px;
+}
+
+// Reset and base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// Import Material Icons
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// Header styles with Material Design
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--surface);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 1000;
+  transition: var(--transition);
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--primary-500);
+    margin-left: 16px;
+    flex-grow: 1;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--surface-200);
+    }
+
+    .theme-icon {
+      color: var(--text-primary);
+      font-size: 20px;
+    }
+  }
+
+  .user-profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 8px;
+
+    &:hover {
+      background-color: var(--surface-200);
+    }
+
+    .user-icon {
+      color: var(--text-primary);
+      font-size: 24px;
+    }
+  }
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 8px;
+
+    &:hover {
+      background-color: var(--surface-200);
+    }
+
+    .logout-icon {
+      color: var(--text-primary);
+      font-size: 20px;
+    }
+  }
+}
+
+// GitHub-style authentication buttons in header
+.auth-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid #d1d9e0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #24292f;
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 20px;
+  position: relative;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #24292f;
+  }
+
+  span {
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  }
+
+  &:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d9e0;
+    text-decoration: none;
+    transition-duration: 0.1s;
+  }
+
+  &:active {
+    background-color: #e5e7ea;
+    border-color: #d1d9e0;
+    transform: none;
+  }
+
+  &:focus {
+    outline: 2px solid #0969da;
+    outline-offset: -2px;
+  }
+
+  // Dark theme styles
+  :host-context(.dark-theme) & {
+    background: #21262d;
+    border-color: #30363d;
+    color: #f0f6fc;
+
+    mat-icon {
+      color: #f0f6fc;
+    }
+
+    &:hover {
+      background-color: #30363d;
+      border-color: #8b949e;
+    }
+
+    &:active {
+      background-color: #21262d;
+      border-color: #8b949e;
+    }
+
+    &:focus {
+      outline-color: #58a6ff;
+    }
+  }
+}
+
+// Material Design Buttons
+.mat-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+
+  &:hover {
+    background: var(--primary-50);
+  }
+
+  &:active {
+    background: var(--primary-100);
+  }
+}
+
+// Theme toggle specific styles
+.theme-toggle {
+  .theme-icon {
+    font-size: 20px;
+    color: var(--primary-500);
+  }
+
+  &:hover {
+    background: var(--primary-50);
+  }
+}
+
+// Hamburger button with Material Design principles
+.hamburger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+  z-index: 1000;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .hamburger-lines {
+    display: flex;
+    flex-direction: column;
+    width: 22px;
+    height: 16px;
+    justify-content: space-between;
+    align-items: center;
+    
+    span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background-color: var(--text-primary);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      
+      &:first-child {
+        width: 100%;
+      }
+      
+      &:nth-child(2) {
+        width: 85%;
+      }
+      
+      &:last-child {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Overlay styles - Only show on mobile/tablet
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  z-index: 998;
+  pointer-events: none;
+
+  &.active {
+    // Only show overlay on mobile/tablet screens
+    @media (max-width: 767px) {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+}
+
+// Material Design Side menu
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--menu-width);
+  height: 100vh;
+  background: var(--surface);
+  transform: translateX(-100%);
+  transition: var(--transition);
+  z-index: 999;
+  overflow-y: auto;
+  border-right: 1px solid var(--surface-200);
+
+  &.active {
+    transform: translateX(0);
+  }
+
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--primary-500);
+    color: white;
+    min-height: var(--header-height);
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .close-btn {
+      color: white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .close-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .menu-content {
+    padding: 8px 0;
+  }
+
+  .menu-list {    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+      min-height: 48px;
+      cursor: pointer !important;
+
+      &:hover {
+        background: var(--primary-50);
+        border-left-color: var(--primary-500);
+        cursor: pointer !important;
+      }
+
+      .menu-icon {
+        margin-right: 16px;
+        font-size: 20px;
+        color: var(--text-secondary);
+        width: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .menu-text {
+        font-weight: 400;
+        font-size: 14px;
+      }      &.logout {
+        border-top: 1px solid var(--surface-200);
+        margin-top: 8px;
+        color: var(--text-secondary);
+        cursor: pointer !important;
+        background: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        text-align: left;
+        width: 100%;
+        font-family: inherit;
+        font-size: inherit;
+        outline: none;
+
+        &:hover {
+          background: #ffebee;
+          border-left-color: #f44336;
+          cursor: pointer !important;
+          
+          .menu-icon {
+            color: #f44336;
+          }
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+  .menu-footer {
+    margin-top: auto;
+    padding-top: 8px;
+  }
+}
+
+// Side menu styles
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;  width: var(--menu-width);
+  height: 100vh;
+  background: var(--surface);
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: var(--transition);
+  z-index: 999;
+  overflow-y: auto;
+
+  &.active {
+    transform: translateX(0);
+  }
+
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--surface-200);
+    background: var(--primary-color);
+    color: white;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: var(--transition);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;    li {
+      border-bottom: 1px solid var(--surface-200);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      a {
+        display: block;
+        padding: 16px 20px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+        position: relative;
+
+        &:hover {
+          background-color: #f8f9fa;
+          color: var(--accent-color);
+          padding-left: 30px;
+        }
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 4px;
+          background: var(--accent-color);
+          transform: scaleY(0);
+          transition: var(--transition);
+        }        &:hover:before {
+          transform: scaleY(1);
+        }
+      }
+    }
+  }
+}
+
+// Main content styles
+.main-content {
+  margin-top: var(--header-height);
+  padding: 40px 20px;
+  min-height: calc(100vh - var(--header-height));
+  transition: var(--transition);
+
+  &.menu-open {
+    // On desktop, shift content to make room for menu
+    @media (min-width: 768px) {
+      margin-left: var(--menu-width);
+    }
+    
+    // On mobile/tablet, keep content in place but allow interaction
+    @media (max-width: 767px) {
+      // Content remains interactive, overlay handles the backdrop
+      position: relative;
+      z-index: 997; // Below overlay but above normal content
+    }
+  }
+
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #6c757d;
+      line-height: 1.7;
+    }
+  }
+  .demo-content {
+    background: var(--surface);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-top: 30px;
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 1.75rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f3f4;
+        position: relative;
+        padding-left: 25px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: var(--accent-color);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .side-menu {
+    width: 85%;
+    max-width: var(--menu-width);
+  }
+
+  .main-content {
+    padding: 20px 15px;
+
+    .content-container {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .header {
+    padding: 0 15px;
+
+    .logo {
+      font-size: 1.25rem;
+      margin-left: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .side-menu {
+    width: 100%;
+  }
+
+  .main-content {
+    .content-container {
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+  }
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Focus styles for accessibility
+button:focus,
+a:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+// Animation for menu items
+.menu-list li {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.3s ease forwards;
+}
+
+.side-menu.active .menu-list li {
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}
+
+@keyframes slideInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Dark theme menu support
+.dark-theme {
+  .hamburger-btn {
+    &:hover {
+      background-color: #ffffff;
+    }
+
+    .hamburger-lines span {
+      background-color: var(--text-primary); // Ensure proper contrast in dark theme
+    }
+  }
+  .side-menu {
+    background: var(--surface);
+    border-right: 1px solid var(--surface-300);
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3); // Darker shadow for dark theme
+
+    .menu-header {
+      border-bottom: 1px solid var(--surface-300);
+    }
+
+    .menu-list .menu-item {
+      color: var(--text-primary);
+
+      &:hover {
+        background: #404040 !important; // Solid medium grey background with !important to override
+        border-left-color: var(--primary-500);
+        color: #ffffff !important; // Ensure white text for good contrast
+      }
+
+      .menu-icon {
+        color: var(--text-secondary);
+      }
+
+      &:hover .menu-icon {
+        color: #ffffff !important; // White icon on hover for consistency
+      }
+
+      &.logout {
+        color: var(--text-secondary);
+        border-top: 1px solid var(--surface-300);
+
+        &:hover {
+          background: rgba(244, 67, 54, 0.1) !important;
+          border-left-color: #f44336;
+          
+          .menu-icon {
+            color: #f44336 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}

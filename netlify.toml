@@ -1,0 +1,39 @@
+# Netlify Deployment Configuration
+# Place this file at the root of your project
+
+[build]
+  # Build command
+  command = "npm run build:prod"
+  
+  # Directory to deploy (built assets)
+  publish = "dist/pareto-ui-starter"
+
+[[redirects]]
+  # Handle Angular routing - redirect all routes to index.html
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  
+[[headers]]
+  # Security headers
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+[context.production.environment]
+  # Production environment variables
+  NODE_ENV = "production"
+  
+[context.deploy-preview.environment]
+  # Preview deployment environment
+  NODE_ENV = "development"
+
+# Branch deploy contexts
+[context.develop]
+  command = "npm run build:dev"
+  
+[context.feature-*]
+  command = "npm run build:dev"

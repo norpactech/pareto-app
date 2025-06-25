@@ -1,0 +1,162 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: 32px;
+  
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--primary-color);
+  }
+  
+  .welcome-message {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+  }
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .stat-icon {
+      font-size: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-color);
+    }
+    
+    .stat-info {
+      h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  mat-card-actions {
+    padding-top: 8px;
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}
+
+.quick-actions {
+  h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+    }
+  }
+}
+
+.user-info-card {
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      strong {
+        min-width: 120px;
+      }
+      
+      .verified {
+        color: #4caf50;
+        font-weight: 500;
+      }
+      
+      .unverified {
+        color: #f44336;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .dashboard-header {
+    h1 {
+      font-size: 2rem;
+    }
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Dark theme support
+:host-context(.dark-theme) {
+  .stat-card:hover {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+  }
+}

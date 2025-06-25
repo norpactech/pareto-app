@@ -1,0 +1,37 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "baseUrl": "./",    "paths": {
+      "@app/*": ["src/app/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@shared/dialogs": ["src/app/shared/dialogs"],
+      "@shared/dialogs/*": ["src/app/shared/dialogs/*"],
+      "@shared/services/*": ["src/app/shared/services/*"],
+      "@shared/models/*": ["src/app/shared/models/*"],
+      "@shared/utils/*": ["src/app/shared/utils/*"],
+      "@shared/enums/*": ["src/app/shared/enums/*"],
+      "@environments/*": ["src/environments/*"],
+      "@environment/*": ["src/environments/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

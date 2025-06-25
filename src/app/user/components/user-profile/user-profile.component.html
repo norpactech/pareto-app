@@ -1,0 +1,224 @@
+<div class="user-profile-container">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-content">
+      <span class="material-icons spinner">hourglass_empty</span>
+      <p>Loading profile...</p>
+    </div>
+  </div>
+  <!-- Profile form -->
+  <div *ngIf="!isLoading" class="profile-form-container">
+    <div class="form-header">
+      <div class="header-content">
+        <h2>{{ currentUser ? 'Edit Profile' : 'Create Your Profile' }}</h2>
+        <p>{{ currentUser ? 'Update your profile information below.' : 'Please fill in your profile information to get started.' }}</p>
+      </div>
+      <button 
+        type="button" 
+        class="close-btn" 
+        (click)="onCancel()" 
+        aria-label="Close profile form"
+        title="Close"
+      >
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSave()" class="auth-form">
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">person</span>
+          <h3>Personal Information</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">email</span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              readonly
+              placeholder="Email address"
+            />
+          </div>
+          <div class="field-hint">Email cannot be changed</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="firstName" class="form-label">First Name</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">person</span>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                class="form-input"
+                [class.error]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched"
+                placeholder="Enter your first name"
+              />
+            </div>
+            <div class="field-error" *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+              {{ getErrorMessage('firstName') }}
+            </div>
+          </div>
+
+          <div class="form-group half-width">
+            <label for="lastName" class="form-label">Last Name</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">person</span>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                class="form-input"
+                [class.error]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched"
+                placeholder="Enter your last name"
+              />
+            </div>
+            <div class="field-error" *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+              {{ getErrorMessage('lastName') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">phone</span>            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="form-input"
+              [class.error]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched"
+              placeholder="555-123-4567"
+              (input)="formatPhoneNumber($event)"
+              maxlength="12"
+            />
+          </div>
+          <div class="field-error" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+            {{ getErrorMessage('phone') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">home</span>
+          <h3>Address Information</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="street1" class="form-label">Street Address</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">home</span>
+            <input
+              id="street1"
+              type="text"
+              formControlName="street1"
+              class="form-input"
+              [class.error]="profileForm.get('street1')?.invalid && profileForm.get('street1')?.touched"
+              placeholder="Enter your street address"
+            />
+          </div>
+          <div class="field-error" *ngIf="profileForm.get('street1')?.invalid && profileForm.get('street1')?.touched">
+            {{ getErrorMessage('street1') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="street2" class="form-label">Street Address Line 2</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">home</span>
+            <input
+              id="street2"
+              type="text"
+              formControlName="street2"
+              class="form-input"
+              placeholder="Apartment, suite, etc. (optional)"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group city-field">
+            <label for="city" class="form-label">City</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">location_city</span>
+              <input
+                id="city"
+                type="text"
+                formControlName="city"
+                class="form-input"
+                [class.error]="profileForm.get('city')?.invalid && profileForm.get('city')?.touched"
+                placeholder="Enter your city"
+              />
+            </div>
+            <div class="field-error" *ngIf="profileForm.get('city')?.invalid && profileForm.get('city')?.touched">
+              {{ getErrorMessage('city') }}
+            </div>
+          </div>
+
+          <div class="form-group state-field">
+            <label for="state" class="form-label">State</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">map</span>
+              <input
+                id="state"
+                type="text"
+                formControlName="state"
+                class="form-input"
+                [class.error]="profileForm.get('state')?.invalid && profileForm.get('state')?.touched"
+                placeholder="CA"
+                maxlength="2"
+              />
+            </div>
+            <div class="field-error" *ngIf="profileForm.get('state')?.invalid && profileForm.get('state')?.touched">
+              {{ getErrorMessage('state') }}
+            </div>
+          </div>
+
+          <div class="form-group zip-field">
+            <label for="zipCode" class="form-label">ZIP Code</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">mail</span>
+              <input
+                id="zipCode"
+                type="text"
+                formControlName="zipCode"
+                class="form-input"
+                [class.error]="profileForm.get('zipCode')?.invalid && profileForm.get('zipCode')?.touched"
+                placeholder="12345"
+              />
+            </div>
+            <div class="field-error" *ngIf="profileForm.get('zipCode')?.invalid && profileForm.get('zipCode')?.touched">
+              {{ getErrorMessage('zipCode') }}
+            </div>
+          </div>
+        </div>
+      </div>      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!profileForm.valid || isSaving"
+          [class.loading]="isSaving"
+        >
+          <span *ngIf="!isSaving" class="button-content">
+            <span class="material-icons">{{ currentUser ? 'save' : 'person_add' }}</span>
+            {{ currentUser ? 'Update Profile' : 'Create Profile' }}
+          </span>
+          <span *ngIf="isSaving" class="loading-content">
+            <span class="material-icons spinner">hourglass_empty</span>
+            {{ currentUser ? 'Updating...' : 'Creating...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

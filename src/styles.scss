@@ -1,0 +1,125 @@
+// Import Angular Material theme - must be first
+@use './themes/pareto-theme.scss';
+
+/* You can add global styles to this file, and also import other style files */
+
+// Import Google Fonts and Material Icons
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// Global application styles with theme support
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background: var(--background) !important;
+  background-color: var(--background) !important;
+  background-image: none !important;
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Enhanced scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-300);
+  border-radius: 4px;
+  
+  &:hover {
+    background: var(--primary-400);
+  }
+}
+
+// Dark theme scrollbar
+.dark-theme {
+  ::-webkit-scrollbar-track {
+    background: var(--surface-200);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary-600);
+    
+    &:hover {
+      background: var(--primary-500);
+    }
+  }
+}
+
+// Custom utility classes
+.theme-primary {
+  color: var(--primary-500) !important;
+}
+
+.theme-accent {
+  color: var(--accent-500) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-500) !important;
+}
+
+.bg-surface {
+  background-color: var(--surface) !important;
+}
+
+.bg-card {
+  background-color: var(--card) !important;
+}
+
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Global Snackbar Styles */
+::ng-deep {
+  .success-snackbar {
+    background-color: var(--primary-color, #4caf50) !important;
+    color: white !important;
+  }
+
+  .error-snackbar {
+    background-color: var(--error-color, #f44336) !important;
+    color: white !important;
+  }
+}

@@ -1,0 +1,89 @@
+<!-- Material Design Header with hamburger menu -->
+<header class="mat-elevation-z4 header">
+  <!-- Only show hamburger menu for authenticated users with profiles -->
+  <button *ngIf="isAuthenticatedWithProfile" class="hamburger-btn mat-icon-button" (click)="toggleMenu()" aria-label="Toggle menu">
+    <div class="hamburger-lines">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
+    <h1 class="logo">{{ title }}</h1>
+  
+  <div class="header-actions">    <!-- Authenticated User Actions -->
+    <ng-container *ngIf="isAuthenticated">
+      <!-- User Profile Button -->
+      <button class="user-profile-btn mat-icon-button" 
+              (click)="openUserProfile()" 
+              matTooltip="User Profile">
+        <mat-icon class="user-icon">account_circle</mat-icon>
+      </button>
+      
+      <!-- Logout Button -->
+      <button class="logout-btn mat-icon-button" 
+              (click)="signOut()" 
+              matTooltip="Sign Out">
+        <mat-icon class="logout-icon">logout</mat-icon>
+      </button>
+      
+      <!-- Theme Toggle -->
+      <button class="theme-toggle mat-icon-button" 
+              (click)="toggleTheme()" 
+              [attr.aria-label]="isDarkTheme ? 'Switch to light theme' : 'Switch to dark theme'">
+        <mat-icon class="theme-icon">{{ isDarkTheme ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+    </ng-container><!-- Unauthenticated User Actions -->
+    <ng-container *ngIf="!isAuthenticated">
+      <button class="auth-btn" routerLink="/auth/signin">
+        <mat-icon>login</mat-icon>
+        <span>Sign In</span>
+      </button>
+      <button class="auth-btn" routerLink="/auth/signup">
+        <mat-icon>person_add</mat-icon>
+        <span>Sign Up</span>
+      </button>
+    </ng-container>
+  </div>
+</header>
+
+<!-- Overlay for mobile menu -->
+<div class="overlay" [class.active]="isMenuOpen" (click)="closeMenuOnOverlay()" (keydown.enter)="closeMenuOnOverlay()" (keydown.space)="closeMenuOnOverlay()" tabindex="0" role="button" aria-label="Close menu overlay"></div>
+
+<!-- Material Design Side navigation menu -->
+<nav class="side-menu mat-elevation-z8" [class.active]="isMenuOpen">
+  <div class="menu-header">
+    <h2>Navigation</h2>
+    <button class="close-btn mat-icon-button" (click)="closeMenu()" aria-label="Close menu">
+      <span class="close-icon material-icons">close</span>
+    </button>
+  </div>  <div class="menu-content">
+    <div class="menu-list">
+      <a routerLink="/" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+        <span class="menu-icon material-icons">home</span>
+        <span class="menu-text">Home</span>
+      </a>
+        <!-- Authenticated User Menu Items -->      <ng-container *ngIf="isAuthenticated">        <a routerLink="/users/profile" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+          <span class="menu-icon material-icons">person</span>
+          <span class="menu-text">Profile</span>
+        </a>
+        <a routerLink="/users" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+          <span class="menu-icon material-icons">manage_accounts</span>
+          <span class="menu-text">User Management</span>
+        </a>        
+        <a routerLink="/help" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+          <span class="menu-icon material-icons">help</span>
+          <span class="menu-text">Help</span>
+        </a>
+        <a routerLink="/home" class="menu-item mat-list-item" (click)="signOut()">
+          <span class="menu-icon material-icons">logout</span>
+          <span class="menu-text">logout</span>
+        </a>
+      </ng-container>
+    </div>      
+  </div>
+</nav>
+
+<!-- Material Design Main content area -->
+<main class="main-content" [class.menu-open]="isMenuOpen">
+  <router-outlet></router-outlet>
+</main>

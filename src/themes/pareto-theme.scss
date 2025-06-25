@@ -1,0 +1,479 @@
+// Custom Pareto Theme - Material Design Inspired
+// This theme provides Material Design styling using pure CSS without Angular Material dependency
+
+// Global styles
+html, body {
+  height: 100%;
+  margin: 0;  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Custom CSS variables for consistent theming
+:root {
+  // Light theme colors - Green Palette
+  --primary-50: #e8f7f0;
+  --primary-100: #c5ebd9;
+  --primary-200: #9fddc0;
+  --primary-300: #78cfa6;
+  --primary-400: #5bc593;
+  --primary-500: #3ebb80;  // Primary green
+  --primary-600: #38a574;
+  --primary-700: #2f8c65;
+  --primary-800: #277456;
+  --primary-900: #1a5139;
+
+  // Accent colors - Dark Green Palette
+  --accent-50: #e6f4ea;
+  --accent-100: #c1e4cb;
+  --accent-200: #98d2a9;
+  --accent-300: #6ec087;
+  --accent-400: #4fb26d;
+  --accent-500: #2fa453;  // Dark green
+  --accent-600: #2a954c;
+  --accent-700: #238342;
+  --accent-800: #1d7238;
+  --accent-900: #125127;
+
+  // Surface colors - Light theme
+  --surface-50: #fafafa;
+  --surface-100: #f5f5f5;
+  --surface-200: #eeeeee;
+  --surface-300: #e0e0e0;
+  --surface-400: #bdbdbd;
+  --surface-500: #9e9e9e;
+
+  // Text colors - Light theme
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-disabled: rgba(0, 0, 0, 0.38);
+
+  // Background colors - Light theme
+  --background: #ffffff;
+  --surface: #ffffff;
+  --card: #ffffff;
+
+  // Error colors
+  --error-50: #ffebee;
+  --error-100: #ffcdd2;
+  --error-500: #f44336;
+  --error-700: #d32f2f;
+
+  // Shadows
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --shadow-4: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  --shadow-5: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+}
+
+// Dark theme variables
+.dark-theme {
+  // Primary colors remain the same for dark theme
+  --primary-50: #e8f7f0;
+  --primary-100: #c5ebd9;
+  --primary-200: #9fddc0;
+  --primary-300: #78cfa6;
+  --primary-400: #5bc593;
+  --primary-500: #3ebb80;
+  --primary-600: #38a574;
+  --primary-700: #2f8c65;
+  --primary-800: #277456;
+  --primary-900: #1a5139;
+
+  // Surface colors for dark theme
+  --surface-50: #121212;
+  --surface-100: #1e1e1e;
+  --surface-200: #232323;
+  --surface-300: #252525;
+  --surface-400: #272727;
+  --surface-500: #2c2c2c;
+
+  // Text colors for dark theme
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-disabled: rgba(255, 255, 255, 0.38);
+
+  // Background colors for dark theme
+  --background: #121212;
+  --surface: #1e1e1e;
+  --card: #2d2d2d;
+
+  // Enhanced shadows for dark theme
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.48);
+  --shadow-2: 0 3px 6px rgba(0, 0, 0, 0.32), 0 3px 6px rgba(0, 0, 0, 0.46);
+  --shadow-3: 0 10px 20px rgba(0, 0, 0, 0.38), 0 6px 6px rgba(0, 0, 0, 0.46);
+  --shadow-4: 0 14px 28px rgba(0, 0, 0, 0.50), 0 10px 10px rgba(0, 0, 0, 0.44);
+  --shadow-5: 0 19px 38px rgba(0, 0, 0, 0.60), 0 15px 12px rgba(0, 0, 0, 0.44);
+}
+
+// Global styles
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background: var(--background) !important;
+  background-color: var(--background) !important;
+  background-image: none !important;
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Material Design elevation classes
+.mat-elevation-z0 { box-shadow: none !important; }
+.mat-elevation-z1 { box-shadow: var(--shadow-1) !important; }
+.mat-elevation-z2 { box-shadow: var(--shadow-2) !important; }
+.mat-elevation-z3 { box-shadow: var(--shadow-3) !important; }
+.mat-elevation-z4 { box-shadow: var(--shadow-4) !important; }
+.mat-elevation-z5 { box-shadow: var(--shadow-5) !important; }
+.mat-elevation-z8 { box-shadow: var(--shadow-5) !important; }
+
+// Material Design inspired button styles
+.mat-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-primary);
+
+  &:hover {
+    background: var(--primary-50);
+  }
+
+  &:active {
+    background: var(--primary-100);
+  }
+}
+
+// Material Design inspired list item styles
+.mat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 3px solid transparent;
+  min-height: 48px;
+
+  &:hover {
+    background: var(--primary-50);
+    border-left-color: var(--primary-500);
+  }
+}
+
+// Dialog styles for better scrolling and sizing
+.profile-dialog {
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-max-height: 90vh;
+    --mdc-dialog-container-min-height: auto;
+  }
+
+  .mat-mdc-dialog-content {
+    max-height: calc(90vh - 8rem);
+    overflow-y: auto;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mat-mdc-dialog-actions {
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--surface-300);
+    margin: 0;
+  }
+}
+
+// Dark theme dialog adjustments
+.dark-theme .profile-dialog {
+  .mat-mdc-dialog-actions {
+    border-top-color: var(--surface-300);
+  }
+}
+
+// Snackbar (Toaster) Styles - Non-transparent with good contrast
+.success-snackbar {
+  .mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-color: #2e7d32; // Dark green background
+    --mdc-snackbar-supporting-text-color: #ffffff; // White text
+    --mat-snack-bar-button-color: #c8e6c9; // Light green for button
+    background-color: #2e7d32 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    border-radius: 8px;
+    opacity: 1 !important; // Ensure non-transparent
+    
+    .mat-mdc-snack-bar-label {
+      color: #ffffff !important;
+      font-weight: 500;
+    }
+    
+    .mat-mdc-snack-bar-action {
+      color: #c8e6c9 !important;
+      font-weight: 600;
+      
+      &:hover {
+        background-color: rgba(200, 230, 201, 0.1);
+      }
+    }
+  }
+}
+
+.error-snackbar {
+  .mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-color: #d32f2f; // Dark red background
+    --mdc-snackbar-supporting-text-color: #ffffff; // White text
+    --mat-snack-bar-button-color: #ffcdd2; // Light red for button
+    background-color: #d32f2f !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+    border-radius: 8px;
+    opacity: 1 !important; // Ensure non-transparent
+    
+    .mat-mdc-snack-bar-label {
+      color: #ffffff !important;
+      font-weight: 500;
+    }
+    
+    .mat-mdc-snack-bar-action {
+      color: #ffcdd2 !important;
+      font-weight: 600;
+      
+      &:hover {
+        background-color: rgba(255, 205, 210, 0.1);
+      }
+    }
+  }
+}
+
+// Dark theme snackbar adjustments
+.dark-theme {
+  .success-snackbar {
+    .mat-mdc-snack-bar-container {
+      --mdc-snackbar-container-color: #1b5e20; // Darker green for dark theme
+      background-color: #1b5e20 !important;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.4);
+    }
+  }
+  
+  .error-snackbar {
+    .mat-mdc-snack-bar-container {
+      --mdc-snackbar-container-color: #b71c1c; // Darker red for dark theme
+      background-color: #b71c1c !important;
+      box-shadow: 0 4px 12px rgba(183, 28, 28, 0.4);
+    }
+  }
+}
+
+// Utility classes
+.primary-color { color: var(--primary-500) !important; }
+.accent-color { color: var(--accent-500) !important; }
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.bg-primary { background-color: var(--primary-500) !important; }
+.bg-surface { background-color: var(--surface) !important; }
+.bg-card { background-color: var(--card) !important; }
+
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Dark theme specific adjustments
+.dark-theme {
+  .mat-icon-button:hover {    background: var(--surface-200);
+  }
+
+  .mat-list-item:hover {
+    background: #404040 !important;
+    color: #ffffff !important;
+  }
+  // Ensure icons in list items also get proper contrast
+  .mat-list-item:hover .menu-icon,
+  .mat-list-item:hover .material-icons {
+    color: #ffffff !important;
+  }
+}
+
+// Force all auth forms to use light theme styling only
+// This ensures proper contrast and avoids dark theme issues for authentication
+app-sign-up,
+app-sign-in,
+app-forgot-password,
+app-reset-password,
+app-verify-email,
+.sign-up-container,
+.sign-in-container,
+.forgot-password-container,
+.reset-password-container,
+.verify-email-container,
+.auth-layout {
+  // Force light theme background and text
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+
+  // Ensure the component itself has light background
+  * {
+    background-color: inherit;
+  }
+
+  // Form containers
+  .auth-form,
+  .form-section {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  // Form labels
+  .form-label,
+  label {
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  // Form inputs
+  .form-input,
+  input,
+  textarea,
+  select {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    border-color: #e0e0e0 !important;
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.38) !important;
+    }
+
+    &:focus {
+      border-color: #3ebb80 !important;
+      color: rgba(0, 0, 0, 0.87) !important;
+    }
+
+    &.error {
+      border-color: #f44336 !important;
+    }
+  }
+
+  // All text elements in auth forms
+  p, span, div, small {
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+  // Icons in auth forms
+  .input-icon,
+  .material-icons {
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  // Password toggle buttons
+  .password-toggle {
+    color: rgba(0, 0, 0, 0.6) !important;
+    background: transparent !important;
+
+    &:hover {
+      background: #f5f5f5 !important;
+    }
+  }
+
+  // Validation errors
+  .field-error {
+    color: #f44336 !important;
+  }
+
+  // Alert boxes in auth forms
+  .alert {
+    background: #f5f5f5 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+    border-color: #e0e0e0 !important;
+
+    &.alert-error {
+      background: #ffebee !important;
+      color: #c62828 !important;
+      border-color: #ffcdd2 !important;
+
+      .icon-error {
+        color: #c62828 !important;
+      }
+    }
+  }
+
+  // Buttons in auth forms
+  .auth-btn,
+  button {
+    background: #3ebb80 !important;
+    color: #ffffff !important;
+
+    &:hover {
+      background: #38a574 !important;
+    }
+
+    &:disabled {
+      background: #e0e0e0 !important;
+      color: rgba(0, 0, 0, 0.38) !important;
+    }
+  }
+}
+
+// Additional protection for auth form headers - high specificity
+app-auth-layout .auth-header h1.brand-title,
+.auth-layout .auth-header h1.brand-title {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+// Force light colored headers in auth forms regardless of theme
+app-auth-layout .auth-header,
+app-auth-layout .auth-header .brand-title {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+// Ensure auth form headers stay light even in dark theme
+.dark-theme app-auth-layout .auth-header,
+.dark-theme app-auth-layout .auth-header .brand-title {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+// Also target auth routes specifically
+body.dark-theme {
+  app-sign-up,
+  app-sign-in,
+  app-forgot-password,
+  app-reset-password,
+  app-verify-email {
+    background: #ffffff !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+}

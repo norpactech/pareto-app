@@ -1,0 +1,207 @@
+// Shared authentication component styles
+// This file contains common styles used across auth components
+
+// Common container
+.auth-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+// Alert styles
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+
+  &.alert-error {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+
+    .icon-error {
+      font-size: 20px;
+      color: #c62828;
+    }
+  }
+}
+
+// Form styles
+.auth-form {
+  .form-group {
+    margin-bottom: 24px;
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }    .input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .input-icon {
+        position: absolute;
+        left: 12px;
+        z-index: 2;
+        font-size: 20px;
+        color: var(--text-secondary);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        border: 2px solid var(--surface-300);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        background: var(--surface);
+        color: var(--text-primary);
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary-500);
+          box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1);
+        }
+
+        &.error {
+          border-color: #f44336;
+          
+          &:focus {
+            border-color: #f44336;
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+          }
+        }
+
+        &::placeholder {
+          color: var(--text-disabled);
+        }
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        color: var(--text-secondary);
+
+        &:hover {
+          background: var(--surface-100);
+        }
+
+        .material-icons {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .field-error {
+      color: #f44336;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      display: block;
+    }
+  }
+}
+
+// Button styles
+.auth-btn {
+  width: 100%;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  &:disabled {
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.submit-btn {
+  @extend .auth-btn;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(62, 187, 128, 0.3);
+  }
+
+  &:disabled {
+    background: var(--surface-400);
+  }
+}
+
+.secondary-btn {
+  @extend .auth-btn;
+  background: transparent;
+  color: var(--primary-500);
+  border: 2px solid var(--primary-500);
+
+  &:hover:not(:disabled) {
+    background: var(--primary-50);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    color: var(--text-disabled);
+    border-color: var(--surface-400);
+  }
+}
+
+// Footer styles
+.auth-footer {
+  text-align: center;
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .auth-link {
+    color: var(--primary-500);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary-600);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 16px;
+  }
+}

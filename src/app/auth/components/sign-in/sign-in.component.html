@@ -1,0 +1,83 @@
+<div class="sign-in-container">
+  <!-- Error Alert -->
+  <div class="alert alert-error" *ngIf="error">
+    <span class="material-icons icon-error">warning</span>
+    <span>{{ error }}</span>
+  </div>
+
+  <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <!-- Email Field -->
+    <div class="form-group">
+      <label for="email" class="form-label">Email Address</label>
+      <div class="input-container">
+        <span class="material-icons input-icon">email</span>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          [class.error]="isFieldInvalid('email')"
+          placeholder="Enter your email"
+          autocomplete="email"
+        />
+      </div>
+      <div class="field-error" *ngIf="isFieldInvalid('email')">
+        {{ getFieldError('email') }}
+      </div>
+    </div>    <!-- Password Field -->
+    <div class="form-group">
+      <label for="password" class="form-label">Password</label>
+      <div class="input-container">
+        <span class="material-icons input-icon">lock</span>
+        <input
+          id="password"
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          class="form-input"
+          [class.error]="isFieldInvalid('password')"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+        />        <button
+          type="button"
+          class="password-toggle"
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+        >
+          <span class="material-icons">{{ hidePassword ? 'visibility' : 'visibility_off' }}</span>
+        </button>      </div>      <div class="field-error" *ngIf="isFieldInvalid('password')">
+        {{ getFieldError('password') }}
+      </div>
+    </div>    <!-- Remember Me & Forgot Password -->
+    <div class="form-options">
+      <label class="checkbox-container" title="Keep me signed in on this device">
+        <input type="checkbox" formControlName="rememberMe">
+        <span class="checkmark"></span>
+        <span class="checkbox-label">Remember me</span>
+      </label>
+      <a routerLink="/auth/forgot-password" class="forgot-link">
+        Forgot password?
+      </a>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="submit-btn"      [disabled]="loading || signInForm.invalid"
+      [class.loading]="loading"
+    >
+      <span *ngIf="!loading">Sign In</span>
+      <span *ngIf="loading" class="loading-content">
+        <span class="material-icons spinner">hourglass_empty</span>
+        Signing in...
+      </span>
+    </button>
+  </form>
+
+  <!-- Sign Up Link -->
+  <div class="auth-footer">
+    <p>
+      Don't have an account? 
+      <a routerLink="/auth/signup" class="auth-link">Sign up here</a>
+    </p>
+  </div>
+</div>
