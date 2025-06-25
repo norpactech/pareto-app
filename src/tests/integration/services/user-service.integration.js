@@ -17,7 +17,7 @@ const https = require('https');
 const { URL } = require('url');
 
 // Configuration
-const API_BASE_URL = 'https://dev.api.paretofactory.com/api';
+const API_BASE_URL = 'http://localhost:8087/api';
 const USER_ENDPOINT = `${API_BASE_URL}/user`;
 const API_TIMEOUT = 15000; // 15 seconds
 

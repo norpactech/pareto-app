@@ -5,14 +5,14 @@
  */
 import { inject, Injectable } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { IUser } from '@shared/model'
+import { IProject } from '@shared/model'
 import { EnvironmentService } from '@shared/service/environment.service';
 import { BaseService } from '@shared/service/base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService extends BaseService<IUser> {
+export class ProjectService extends BaseService<IProject> {
   constructor() {
     const environmentService = inject(EnvironmentService);
     const snackBar = inject(MatSnackBar);
