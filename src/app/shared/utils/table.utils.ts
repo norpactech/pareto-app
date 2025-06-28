@@ -5,20 +5,9 @@
 
 import { Injectable, inject } from '@angular/core'
 import { RefTablesService, RefTableTypeService } from '@shared/service'
+import { IRefTables, IRefTableType } from '@shared/model'
 import { Observable, throwError } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
-
-// Define the interfaces locally since they don't exist in the current models
-interface IRefTableType {
-  id: string
-  name: string
-}
-
-interface IRefTables {
-  id: string
-  name: string
-  value: string
-}
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +26,7 @@ export class TableUtils {
       searchValue: refTableTypeName,
     }
 
-    return this.refTableTypeService.find(params).pipe(
+    return (this.refTableTypeService.find(params) as Observable<{ data: IRefTableType[] }>).pipe(
       map((response) => response.data?.[0] as IRefTableType | null),
       switchMap((refTableType) => {
         if (!refTableType) {
@@ -49,7 +38,7 @@ export class TableUtils {
           searchColumn: 'idRefTableType',
           searchValue: refTableType.id,
         }
-        return this.refTablesService.find(tableParams).pipe(
+        return (this.refTablesService.find(tableParams) as Observable<{ data: IRefTables[] }>).pipe(
           map((response) =>
             response.data.map((type: IRefTables) => ({
               id: type.id,

@@ -13,7 +13,7 @@ import { UserService } from '@shared/service';
 import { IUser } from '@app/shared/model';
 import { IPersistResponse } from '@shared/service/model';
 import { CognitoAuthService } from '../../../auth/services/cognito-auth.service';
-import { IUserPutDTO } from '@app/shared/dto/user';
+import { IUserPutDTO } from '@app/shared/dto/user.dto';
 
 @Component({
   selector: 'app-user-profile',
