@@ -7,7 +7,7 @@ export const environment = {
   environmentName: 'local',
   production: false,
   development: true,
-  apiUrl: 'https://dev.api.paretofactory.com/v01',
+  apiUrl: 'http://localhost:8087/v01',
   enableLogging: true,
   enableDebugInfo: true,
   logLevel: 'debug',

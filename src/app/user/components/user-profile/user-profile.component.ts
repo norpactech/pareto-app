@@ -162,7 +162,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         console.log('Sending update data to API (with original updatedAt for soft locking):', updateData);
         console.log('Original updatedAt from loaded record:', this.currentUser.updatedAt);
         console.log('Timestamp being sent for soft locking:', updateData.updatedAt);
-        this.userService.persist(updateData)
+        this.userService.update(updateData)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {
@@ -192,7 +192,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         });
 
         console.log('Sending create data to API:', createData);
-        this.userService.persist(createData)
+        this.userService.create(createData)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (response) => {

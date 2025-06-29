@@ -13,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from '@shared/service';
-import { IUser } from '../../../shared/model/user.dto';
+import { IUser } from '@shared/model';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 @Component({
@@ -84,7 +84,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
   deleteUser(user: IUser): void {
     if (confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`)) {
-      this.userService.delete({ id: user.id })
+      this.userService.delete({ id: user.id, updatedAt: user.updatedAt, updatedBy: user.updatedBy })
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {

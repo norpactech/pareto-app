@@ -14,7 +14,7 @@ import { ThemeService } from '@shared/service/theme.service';
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service';
 import { UserProfileComponent } from './user/components/user-profile/user-profile.component';
 import { UserService } from '@shared/service';
-import { IUser } from '@shared/model/user.dto';
+import { IUser } from '@shared/model';
 import { filter } from 'rxjs/operators';
 
 @Component({
