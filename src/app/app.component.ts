@@ -13,13 +13,15 @@ import { MatTooltipModule } from '@angular/material/tooltip'
 import { ThemeService } from '@shared/service/theme.service'
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service'
 import { UserProfileComponent } from './user/components/user-profile/user-profile.component'
+import { TenantSwitcherComponent } from './shared/components/tenant-switcher/tenant-switcher.component'
 import { UserService } from '@shared/service'
+import { TenantStateService } from './shared/state/tenant-state.service'
 import { IUser } from '@shared/model'
 import { filter } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, TenantSwitcherComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -29,8 +31,9 @@ export class AppComponent implements OnInit {
   private dialog = inject(MatDialog)
   private userService = inject(UserService)
   private router = inject(Router)
-
-  title = 'Pareto UI Starter'
+  private tenantStateService = inject(TenantStateService)
+  
+  title = 'Pareto Factory'
   isMenuOpen = false
   isDarkTheme = false
   hasProfile = false
@@ -90,6 +93,9 @@ export class AppComponent implements OnInit {
         }, 500)
       }
     })
+
+    // Restore tenant state on app initialization
+    this.tenantStateService.restoreTenantFromStorage()
   }
 
   toggleMenu() {

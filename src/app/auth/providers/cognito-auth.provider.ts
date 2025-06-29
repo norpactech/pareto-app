@@ -33,7 +33,7 @@ import {
   AuthError,
   AuthErrorType
 } from '../interfaces/auth-provider.interface'
-import { EnvironmentService } from '@shared/services'
+import { EnvironmentService } from '@shared/service/environment.service'
 
 export interface CognitoConfig {
   region: string;
@@ -41,6 +41,12 @@ export interface CognitoConfig {
   userPoolWebClientId: string;
   identityPoolId?: string;
   domain?: string;
+}
+
+interface EnvironmentCognitoConfig {
+  region: string;
+  userPoolId: string;
+  userPoolClientId: string;
 }
 
 @Injectable({
@@ -55,7 +61,7 @@ export class CognitoAuthProvider extends BaseAuthProvider {  private environment
 
   constructor() {
     super()
-    const envConfig = this.environmentService.cognito
+    const envConfig = this.environmentService.cognito as EnvironmentCognitoConfig
     this.config = {
       region: envConfig.region,
       userPoolId: envConfig.userPoolId,
