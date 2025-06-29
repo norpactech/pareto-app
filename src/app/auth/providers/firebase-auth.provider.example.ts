@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable } from '@angular/core';
-import { Observable, from, throwError, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core'
+import { Observable, from, throwError, of } from 'rxjs'
+import { map, catchError, tap } from 'rxjs/operators'
 
 // Note: This would require Firebase SDK installation
 // npm install firebase @angular/fire
@@ -22,7 +22,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 //   User as FirebaseUser
 // } from 'firebase/auth';
 
-import { BaseAuthProvider } from './base-auth.provider';
+import { BaseAuthProvider } from './base-auth.provider'
 import {
   AuthUser,
   SignUpRequest,
@@ -35,7 +35,7 @@ import {
   PasswordChangeRequest,
   AuthError,
   AuthErrorType
-} from '../interfaces/auth-provider.interface';
+} from '../interfaces/auth-provider.interface'
 
 export interface FirebaseConfig {
   apiKey: string;
@@ -63,10 +63,10 @@ export interface FirebaseConfig {
 })
 export class FirebaseAuthProvider extends BaseAuthProvider {
   // private firebaseAuth: Auth;
-  private config: FirebaseConfig;
+  private config: FirebaseConfig
 
   constructor() {
-    super();
+    super()
     // This would come from environment config
     this.config = {
       apiKey: "your-api-key",
@@ -75,7 +75,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
       storageBucket: "your-app.appspot.com",
       messagingSenderId: "123456789",
       appId: "your-app-id"
-    };
+    }
     
     // Initialize Firebase
     // this.initializeFirebase();
@@ -87,8 +87,8 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
   // }
 
   signUp(request: SignUpRequest): Observable<SignUpResponse> {
-    this.setLoading(true);
-    this.setError(null);
+    this.setLoading(true)
+    this.setError(null)
 
     // Example implementation (commented out since Firebase isn't installed)
     /*
@@ -117,12 +117,12 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return throwError(() => new AuthError(
       AuthErrorType.UNKNOWN_ERROR,
       'Firebase provider not fully implemented. Please install Firebase SDK and uncomment the implementation.'
-    ));
+    ))
   }
 
   signIn(request: SignInRequest): Observable<SignInResponse> {
-    this.setLoading(true);
-    this.setError(null);
+    this.setLoading(true)
+    this.setError(null)
 
     // Example implementation (commented out)
     /*
@@ -147,7 +147,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return throwError(() => new AuthError(
       AuthErrorType.UNKNOWN_ERROR,
       'Firebase provider not fully implemented'
-    ));
+    ))
   }
 
   signOut(): Observable<void> {
@@ -160,13 +160,13 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     );
     */
 
-    return of(undefined);
+    return of(undefined)
   }
 
   verifyEmail(request: EmailVerificationRequest): Observable<void> {
     // Firebase handles email verification differently
     // This would typically be handled automatically when the user clicks the link
-    return of(undefined);
+    return of(undefined)
   }
 
   resendVerificationCode(request: ResendVerificationRequest): Observable<void> {
@@ -183,7 +183,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return throwError(() => new AuthError(
       AuthErrorType.UNKNOWN_ERROR,
       'No current user found'
-    ));
+    ))
   }
 
   forgotPassword(email: string): Observable<void> {
@@ -194,7 +194,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     );
     */
 
-    return of(undefined);
+    return of(undefined)
   }
 
   confirmForgotPassword(confirmation: PasswordResetConfirmation): Observable<void> {
@@ -205,7 +205,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     );
     */
 
-    return of(undefined);
+    return of(undefined)
   }
 
   changePassword(request: PasswordChangeRequest): Observable<void> {
@@ -222,7 +222,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return throwError(() => new AuthError(
       AuthErrorType.UNKNOWN_ERROR,
       'No current user found'
-    ));
+    ))
   }
 
   getCurrentUser(): Observable<AuthUser | null> {
@@ -233,7 +233,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     }
     */
 
-    return of(null);
+    return of(null)
   }
 
   refreshSession(): Observable<SignInResponse> {
@@ -253,7 +253,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return throwError(() => new AuthError(
       AuthErrorType.INVALID_TOKEN,
       'No valid session found'
-    ));
+    ))
   }
 
   getAccessToken(): Observable<string | null> {
@@ -264,7 +264,7 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     }
     */
 
-    return of(null);
+    return of(null)
   }
 
   isTokenValid(): Observable<boolean> {
@@ -272,36 +272,36 @@ export class FirebaseAuthProvider extends BaseAuthProvider {
     return of(!!this.firebaseAuth.currentUser);
     */
 
-    return of(false);
+    return of(false)
   }
 
   // Firebase-specific error mapping
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected override mapProviderError(error: any, context: string): AuthError {
-    const errorCode = error.code;
+    const errorCode = error.code
     
     switch (errorCode) {
       case 'auth/user-not-found':
-        return new AuthError(AuthErrorType.USER_NOT_FOUND, 'User not found', error);
+        return new AuthError(AuthErrorType.USER_NOT_FOUND, 'User not found', error)
       
       case 'auth/wrong-password':
       case 'auth/invalid-credential':
-        return new AuthError(AuthErrorType.INVALID_CREDENTIALS, 'Invalid email or password', error);
+        return new AuthError(AuthErrorType.INVALID_CREDENTIALS, 'Invalid email or password', error)
       
       case 'auth/email-already-in-use':
-        return new AuthError(AuthErrorType.USER_ALREADY_EXISTS, 'Email already in use', error);
+        return new AuthError(AuthErrorType.USER_ALREADY_EXISTS, 'Email already in use', error)
       
       case 'auth/weak-password':
-        return new AuthError(AuthErrorType.PASSWORD_TOO_WEAK, 'Password is too weak', error);
+        return new AuthError(AuthErrorType.PASSWORD_TOO_WEAK, 'Password is too weak', error)
       
       case 'auth/invalid-email':
-        return new AuthError(AuthErrorType.INVALID_CREDENTIALS, 'Invalid email format', error);
+        return new AuthError(AuthErrorType.INVALID_CREDENTIALS, 'Invalid email format', error)
       
       case 'auth/too-many-requests':
-        return new AuthError(AuthErrorType.TOO_MANY_ATTEMPTS, 'Too many attempts. Please try again later.', error);
+        return new AuthError(AuthErrorType.TOO_MANY_ATTEMPTS, 'Too many attempts. Please try again later.', error)
       
       default:
-        return super.mapProviderError(error, context);
+        return super.mapProviderError(error, context)
     }
   }
 

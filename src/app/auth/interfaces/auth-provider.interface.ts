@@ -2,7 +2,7 @@
  * Copyright (c) 2025 Northern Pacific Technologies, LLC
  * Licensed under the MIT License.
  */
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'
 
 // Core authentication state interface
 export interface AuthState {
@@ -173,8 +173,8 @@ export class AuthError extends Error {
     public originalError?: Error | unknown,
     public metadata?: Record<string, string | number | boolean>
   ) {
-    super(message);
-    this.name = 'AuthError';
+    super(message)
+    this.name = 'AuthError'
   }
 }
 

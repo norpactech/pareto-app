@@ -33,8 +33,8 @@ import { MatDialogModule } from '@angular/material/dialog' // Import MatDialogMo
   ],
 })
 export class ErrorDialogComponent {
-  public dialogRef = inject(MatDialogRef<ErrorDialogComponent>);
-  public data: { message: string } = inject(MAT_DIALOG_DATA);
+  public dialogRef = inject(MatDialogRef<ErrorDialogComponent>)
+  public data: { message: string } = inject(MAT_DIALOG_DATA)
 
   onClose(): void {
     this.dialogRef.close()

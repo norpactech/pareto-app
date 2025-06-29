@@ -41,11 +41,8 @@
     "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration=local",
     "watch:dev": "ng build --watch --configuration=dev",
-    "test": "ng test",
-    "test:integration": "node src/tests/integration/services/run-ref-tables-test.js",
-    "test:integration:ref-tables": "node src/tests/integration/services/ref-tables-service.integration.js",
-    "test:integration:user": "node src/tests/integration/services/user-service.integration.js",
     "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
     "deploy:dev": "npm run build:dev && echo 'Ready for dev deployment'",
     "deploy:prod": "npm run build:prod && echo 'Ready for production deployment'",
     "env:info": "node -e \"console.log('Environment configurations available:', require('./angular.json').projects['pareto-ui'].architect.build.configurations)\""
@@ -75,12 +72,6 @@
     "angular-eslint": "20.0.0",
     "eslint": "^9.28.0",
     "eslint-formatter-compact": "^8.40.0",
-    "jasmine-core": "~5.6.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.33.1"
   }

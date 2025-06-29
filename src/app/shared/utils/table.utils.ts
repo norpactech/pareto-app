@@ -13,8 +13,8 @@ import { catchError, map, switchMap } from 'rxjs/operators'
   providedIn: 'root',
 })
 export class TableUtils {
-  private refTableTypeService = inject(RefTableTypeService);
-  private refTablesService = inject(RefTablesService);
+  private refTableTypeService = inject(RefTableTypeService)
+  private refTablesService = inject(RefTablesService)
   /**
    * Finds and maps RefTables by RefTableType name.
    * @param refTableTypeName The name of the RefTableType to search for.

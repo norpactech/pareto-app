@@ -32,4 +32,4 @@ export const environment = {
     enableAnimations: true,
     showDebugPanel: false
   }
-};
+}

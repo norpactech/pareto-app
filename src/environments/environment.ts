@@ -4,4 +4,4 @@
  */
 
 // Default environment - points to local development
-export { environment } from './environment.local';
+export { environment } from './environment.local'

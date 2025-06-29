@@ -5,13 +5,13 @@
  */
 import { HttpClient } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
-import { EnvironmentService } from '@shared/service/environment.service';
+import { EnvironmentService } from '@shared/service/environment.service'
 import { IApiResponse, IPersistResponse } from '@shared/service/model'
 import { TextUtils } from '@shared/utils'
 import { Observable, throwError } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { BaseService } from './base.service';
+import { BaseService } from './base.service'
 
 import { ITenantUser } from '@shared/model'
 import { ITenantUserPostDTO, ITenantUserDeleteDTO } from '@shared/dto'
@@ -23,8 +23,8 @@ export class TenantUserService extends BaseService {
 
   protected readonly httpClient = inject(HttpClient)
   protected readonly snackBar = inject(MatSnackBar)
-  protected readonly environmentService = inject(EnvironmentService);
-  protected readonly baseUrl = this.environmentService.apiUrl + '/tenant-user';
+  protected readonly environmentService = inject(EnvironmentService)
+  protected readonly baseUrl = this.environmentService.apiUrl + '/tenant-user'
 
   public get(id_tenant: string, id_user: string): Observable<ITenantUser | null> {
 

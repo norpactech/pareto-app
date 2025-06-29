@@ -33,4 +33,4 @@ export const environment = {
     enableAnimations: true,
     showDebugPanel: true
   }
-};
+}

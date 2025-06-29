@@ -2,21 +2,21 @@
  * Copyright (c) 2025 Northern Pacific Technologies, LLC
  * Licensed under the MIT License.
  */
-import { Injectable, inject } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { CognitoAuthService } from '../services/cognito-auth.service';
+import { Injectable, inject } from '@angular/core'
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http'
+import { Observable, throwError } from 'rxjs'
+import { catchError } from 'rxjs/operators'
+import { CognitoAuthService } from '../services/cognito-auth.service'
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private cognitoAuth = inject(CognitoAuthService);
+  private cognitoAuth = inject(CognitoAuthService)
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Add auth token to requests
-    const authToken = this.cognitoAuth.accessToken;
+    const authToken = this.cognitoAuth.accessToken
     if (authToken && !this.isAuthRequest(request.url)) {
-      request = this.addTokenToRequest(request, authToken);
+      request = this.addTokenToRequest(request, authToken)
     }
 
     return next.handle(request).pipe(
@@ -24,11 +24,11 @@ export class AuthInterceptor implements HttpInterceptor {
         // Handle 401 unauthorized errors
         if (error.status === 401 && !this.isAuthRequest(request.url)) {
           // Sign out user on 401 (token expired or invalid)
-          this.cognitoAuth.signOut();
+          this.cognitoAuth.signOut()
         }
-        return throwError(() => error);
+        return throwError(() => error)
       })
-    );
+    )
   }
 
   private addTokenToRequest(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
@@ -36,11 +36,11 @@ export class AuthInterceptor implements HttpInterceptor {
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
-    });
+    })
   }
 
   private isAuthRequest(url: string): boolean {
     // Don't add token to authentication requests or AWS Cognito requests
-    return url.includes('/auth/') || url.includes('cognito-idp') || url.includes('amazonaws.com');
+    return url.includes('/auth/') || url.includes('cognito-idp') || url.includes('amazonaws.com')
   }
 }

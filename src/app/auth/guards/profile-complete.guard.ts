@@ -3,27 +3,27 @@
  * Licensed under the MIT License.
  */
 
-import { Injectable, inject } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, take, switchMap } from 'rxjs/operators';
-import { CognitoAuthService } from '../services/cognito-auth.service';
-import { UserService } from '@shared/service';
-import { IUser } from '@shared/model';
+import { Injectable, inject } from '@angular/core'
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
+import { Observable } from 'rxjs'
+import { map, take, switchMap } from 'rxjs/operators'
+import { CognitoAuthService } from '../services/cognito-auth.service'
+import { UserService } from '@shared/service'
+import { IUser } from '@shared/model'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileCompleteGuard implements CanActivate {
-  private cognitoAuth = inject(CognitoAuthService);
-  private userService = inject(UserService);
-  private router = inject(Router);
+  private cognitoAuth = inject(CognitoAuthService)
+  private userService = inject(UserService)
+  private router = inject(Router)
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.checkProfileComplete(state.url);
+    return this.checkProfileComplete(state.url)
   }
 
   private checkProfileComplete(url: string): Observable<boolean> {
@@ -31,9 +31,9 @@ export class ProfileCompleteGuard implements CanActivate {
       take(1),
       switchMap(authState => {        
         if (!authState.isAuthenticated) {
-          localStorage.setItem('redirectUrl', url);
-          this.router.navigate(['/auth/signin']);
-          return [false];
+          localStorage.setItem('redirectUrl', url)
+          this.router.navigate(['/auth/signin'])
+          return [false]
         }
         const params: Record<string, unknown> = {
           email: authState.user?.email
@@ -41,35 +41,35 @@ export class ProfileCompleteGuard implements CanActivate {
           map(result => {
 
               // Check if any user profile exists
-            const userProfile: IUser | null = result.data && result.data.length > 0 ? result.data[0] : null;
+            const userProfile: IUser | null = result.data && result.data.length > 0 ? result.data[0] : null
             
             if (!userProfile) {
 
               if (url !== '/complete-profile') {
-                localStorage.setItem('redirectUrl', url);
+                localStorage.setItem('redirectUrl', url)
               }
-              this.router.navigate(['/complete-profile']);
-              return false;
+              this.router.navigate(['/complete-profile'])
+              return false
             }
             
             // Verify that the returned profile actually matches the authenticated user's email
-            const authenticatedEmail = authState.user?.email?.toLowerCase();
-            const profileEmail = userProfile.email?.toLowerCase();
+            const authenticatedEmail = authState.user?.email?.toLowerCase()
+            const profileEmail = userProfile.email?.toLowerCase()
             
             if (authenticatedEmail !== profileEmail) {
-              console.warn('ProfileCompleteGuard: Email mismatch detected');
+              console.warn('ProfileCompleteGuard: Email mismatch detected')
               if (url !== '/complete-profile') {
-                localStorage.setItem('redirectUrl', url);
+                localStorage.setItem('redirectUrl', url)
               }
-              this.router.navigate(['/complete-profile']);
-              return false;
+              this.router.navigate(['/complete-profile'])
+              return false
             }
             
 
-            return true;
+            return true
           })
-        );
+        )
       })
-    );
+    )
   }
 }

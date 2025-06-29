@@ -2,12 +2,12 @@
  * Copyright (c) 2025 Northern Pacific Technologies, LLC
  * Licensed under the MIT License.
  */
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
+import { provideRouter } from '@angular/router'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 
-import { routes } from './app.routes';
+import { routes } from './app.routes'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,4 +16,4 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync()
   ]
-};
+}

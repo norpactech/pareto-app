@@ -30,6 +30,8 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      // Enforce no semicolons in TypeScript code
+      "semi": ["error", "never"]
     },
   },
   {
