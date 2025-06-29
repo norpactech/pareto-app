@@ -1,0 +1,130 @@
+<div class="project-detail-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading project details...</p>
+  </div>
+
+  <!-- Project Details -->
+  <div *ngIf="!loading && project" class="project-details">
+    <mat-card class="main-card">
+      <mat-card-header>
+        <div class="header-content">
+          <div class="title-section">
+            <mat-card-title>
+              <mat-icon class="title-icon">folder</mat-icon>
+              {{ project.name }}
+            </mat-card-title>
+            <mat-card-subtitle>{{ project.description }}</mat-card-subtitle>
+          </div>
+          
+          <div class="status-section">
+            <mat-chip-set>
+              <mat-chip 
+                [class.active-chip]="project.isActive" 
+                [class.inactive-chip]="!project.isActive">
+                {{ project.isActive ? 'Active' : 'Inactive' }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="details-grid">
+          <!-- Basic Information -->
+          <div class="info-section">
+            <h3>Basic Information</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Project ID:</span>
+                <span>{{ project.id }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Schema Name:</span>
+                <span>{{ project.schemaName }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Domain:</span>
+                <span>{{ project.domain }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Artifact:</span>
+                <span>{{ project.artifact }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Information -->
+          <div class="info-section">
+            <h3>Audit Information</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Created At:</span>
+                <span>{{ formatDate(project.createdAt) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Created By:</span>
+                <span>{{ project.createdBy }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Updated At:</span>
+                <span>{{ formatDate(project.updatedAt) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Updated By:</span>
+                <span>{{ project.updatedBy }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="description-section">
+          <h3>Description</h3>
+          <p class="description-text">{{ project.description || 'No description provided.' }}</p>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="card-actions">
+        <button mat-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+          Back to List
+        </button>
+        
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="editProject()" matTooltip="Edit Project">
+            <mat-icon>edit</mat-icon>
+            Edit
+          </button>
+          
+          <button 
+            mat-raised-button 
+            [color]="project.isActive ? 'warn' : 'accent'"
+            (click)="toggleProjectStatus()" 
+            [matTooltip]="project.isActive ? 'Deactivate Project' : 'Activate Project'">
+            <mat-icon>{{ project.isActive ? 'toggle_off' : 'toggle_on' }}</mat-icon>
+            {{ project.isActive ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && !project" class="error-container">
+    <mat-card>
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <h2>Project Not Found</h2>
+          <p>The requested project could not be found or you don't have permission to view it.</p>
+          <button mat-raised-button color="primary" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Projects
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

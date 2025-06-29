@@ -26,6 +26,10 @@ export const routes: Routes = [
   {
     path: 'users',
     loadChildren: () => import('./user/user.module').then(m => m.UserModule)  },  {
+    path: 'project',
+    loadChildren: () => import('./project/project.module').then(m => m.ProjectModule)
+  },
+  {
     path: 'dashboard',
     canActivate: [AuthGuard, ProfileCompleteGuard],
     component: DashboardComponent

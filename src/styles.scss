@@ -123,3 +123,199 @@ body {
     color: white !important;
   }
 }
+
+// Global Paginator Styling - Matches User Profile Input Styling
+::ng-deep .mat-mdc-paginator .mat-mdc-select {
+  .mat-mdc-select-trigger {
+    background: var(--surface) !important;
+    border: 2px solid var(--surface-300) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    min-width: 100px !important;
+    width: 100px !important;
+    height: auto !important;
+    min-height: 44px !important;
+    transition: all 0.2s ease !important;
+    
+    .mat-mdc-select-value-text {
+      color: var(--text-primary) !important;
+      font-size: 0.95rem !important;
+      text-align: center !important;
+      line-height: 1.2 !important;
+    }
+    
+    .mat-mdc-select-arrow {
+      color: var(--text-secondary) !important;
+    }
+    
+    &:hover {
+      border-color: var(--surface-400) !important;
+    }
+    
+    &:focus {
+      border-color: var(--primary-500) !important;
+      box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1) !important;
+      outline: none !important;
+    }
+  }
+  
+  &.mat-mdc-select-focused .mat-mdc-select-trigger {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1) !important;
+  }
+  
+  // Remove any lingering form field backgrounds
+  .mat-mdc-form-field-subscript-wrapper,
+  .mat-mdc-form-field-bottom-align::before {
+    display: none !important;
+  }
+}
+
+// Additional paginator styling for labels and navigation
+::ng-deep .mat-mdc-paginator {
+  .mat-mdc-paginator-page-size-label {
+    font-size: 0.95rem !important;
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    margin-right: 12px !important;
+  }
+
+  .mat-mdc-paginator-range-label {
+    font-size: 0.95rem !important;
+    color: var(--text-secondary) !important;
+    margin: 0 16px !important;
+  }
+
+  // Style navigation buttons to match the overall design
+  .mat-mdc-paginator-navigation-previous,
+  .mat-mdc-paginator-navigation-next,
+  .mat-mdc-paginator-navigation-first,
+  .mat-mdc-paginator-navigation-last {
+    .mat-mdc-icon-button {
+      border: 2px solid var(--surface-300) !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease !important;
+      width: 44px !important;
+      height: 44px !important;
+
+      &:hover:not([disabled]) {
+        background-color: var(--surface-100) !important;
+        border-color: var(--surface-400) !important;
+      }
+
+      &:disabled {
+        opacity: 0.4 !important;
+        border-color: var(--surface-200) !important;
+      }
+
+      .mat-icon {
+        color: var(--text-secondary) !important;
+        font-size: 20px !important;
+      }
+
+      &:hover:not([disabled]) .mat-icon {
+        color: var(--text-primary) !important;
+      }
+    }
+  }
+}
+
+// Global Form Styling - Consistent with User Profile Form
+::ng-deep .form-input-global {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 2px solid var(--surface-300) !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+
+  &:focus {
+    outline: none !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1) !important;
+  }
+
+  &.error {
+    border-color: var(--error-500) !important;
+    
+    &:focus {
+      border-color: var(--error-500) !important;
+      box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1) !important;
+    }
+  }
+
+  &::placeholder {
+    color: var(--text-disabled) !important;
+  }
+
+  &:disabled {
+    background: var(--surface-100) !important;
+    color: var(--text-disabled) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+  }
+}
+
+// Global Button Styling - Consistent with User Profile Form
+::ng-deep .btn-primary-global {
+  padding: 14px 28px !important;
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-width: 180px !important;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-2) !important;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) !important;
+  }
+
+  &:disabled {
+    background: var(--surface-400) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+  }
+}
+
+::ng-deep .btn-secondary-global {
+  padding: 12px 24px !important;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  border: 2px solid var(--surface-300) !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-width: 140px !important;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-100) !important;
+    border-color: var(--surface-400) !important;
+    color: var(--text-primary) !important;
+  }
+
+  &:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+  }
+}

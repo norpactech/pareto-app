@@ -1,0 +1,189 @@
+<div class="project-form-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-content">
+      <mat-spinner diameter="50" class="spinner"></mat-spinner>
+      <p>Loading project...</p>
+    </div>
+  </div>
+
+  <!-- Project Form -->
+  <div *ngIf="!loading" class="profile-form-container">
+    <div class="form-header">
+      <div class="header-content">
+        <h2>{{ isEditMode ? 'Edit Project' : 'Create New Project' }}</h2>
+        <p>{{ isEditMode ? 'Update project details' : 'Fill in the details to create a new project' }}</p>
+      </div>
+    </div>
+
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="auth-form">
+          
+          <!-- Schema Information Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon>fingerprint</mat-icon>
+              <h3>Schema Information</h3>
+            </div>
+            
+            <div class="form-group">
+              <label for="idSchema" class="form-label">Schema ID</label>
+              <div class="input-container">
+                <mat-icon class="input-icon">fingerprint</mat-icon>
+                <input 
+                  id="idSchema"
+                  type="text" 
+                  formControlName="idSchema" 
+                  class="form-input"
+                  placeholder="Enter schema identifier"
+                  [class.error]="getFieldError('idSchema')"
+                />
+              </div>
+              <span *ngIf="getFieldError('idSchema')" class="field-error">
+                {{ getFieldError('idSchema') }}
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="schemaName" class="form-label">Schema Name</label>
+              <div class="input-container">
+                <mat-icon class="input-icon">label</mat-icon>
+                <input 
+                  id="schemaName"
+                  type="text" 
+                  formControlName="schemaName" 
+                  class="form-input"
+                  placeholder="Enter schema name"
+                  [class.error]="getFieldError('schemaName')"
+                />
+              </div>
+              <span *ngIf="getFieldError('schemaName')" class="field-error">
+                {{ getFieldError('schemaName') }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Project Information Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon>folder</mat-icon>
+              <h3>Project Information</h3>
+            </div>
+            
+            <div class="form-group">
+              <label for="projectName" class="form-label">Project Name</label>
+              <div class="input-container">
+                <mat-icon class="input-icon">folder</mat-icon>
+                <input 
+                  id="projectName"
+                  type="text" 
+                  formControlName="name" 
+                  class="form-input"
+                  placeholder="Enter project name"
+                  [class.error]="getFieldError('name')"
+                />
+              </div>
+              <span *ngIf="getFieldError('name')" class="field-error">
+                {{ getFieldError('name') }}
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="form-label">Description</label>
+              <div class="input-container">
+                <mat-icon class="input-icon">description</mat-icon>
+                <textarea 
+                  id="description"
+                  formControlName="description" 
+                  class="form-input textarea-input"
+                  placeholder="Enter project description"
+                  rows="3"
+                  [class.error]="getFieldError('description')"
+                ></textarea>
+              </div>
+              <span *ngIf="getFieldError('description')" class="field-error">
+                {{ getFieldError('description') }}
+              </span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half-width">
+                <label for="domain" class="form-label">Domain</label>
+                <div class="input-container">
+                  <mat-icon class="input-icon">domain</mat-icon>
+                  <input 
+                    id="domain"
+                    type="text" 
+                    formControlName="domain" 
+                    class="form-input"
+                    placeholder="Enter domain"
+                    [class.error]="getFieldError('domain')"
+                  />
+                </div>
+                <span *ngIf="getFieldError('domain')" class="field-error">
+                  {{ getFieldError('domain') }}
+                </span>
+              </div>
+
+              <div class="form-group half-width">
+                <label for="artifact" class="form-label">Artifact</label>
+                <div class="input-container">
+                  <mat-icon class="input-icon">build</mat-icon>
+                  <input 
+                    id="artifact"
+                    type="text" 
+                    formControlName="artifact" 
+                    class="form-input"
+                    placeholder="Enter artifact name"
+                    [class.error]="getFieldError('artifact')"
+                  />
+                </div>
+                <span *ngIf="getFieldError('artifact')" class="field-error">
+                  {{ getFieldError('artifact') }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Section -->
+          <div class="form-section">
+            <div class="section-header">
+              <mat-icon>toggle_on</mat-icon>
+              <h3>Status</h3>
+            </div>
+            
+            <div class="form-group">
+              <mat-checkbox formControlName="isActive" class="status-checkbox">
+                <span class="checkbox-label">Active Project</span>
+              </mat-checkbox>
+              <span class="field-hint">Inactive projects are hidden from most views</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="button" 
+              (click)="onCancel()" 
+              class="cancel-btn"
+              [disabled]="saving">
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+
+            <button 
+              type="submit"
+              (click)="onSubmit()"
+              [disabled]="!projectForm.valid || saving"
+              class="submit-btn">
+              <div class="button-content" [class.hidden]="saving">
+                <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+                {{ isEditMode ? 'Update Project' : 'Create Project' }}
+              </div>
+              <div class="loading-content" [class.hidden]="!saving">
+                <mat-spinner diameter="20"></mat-spinner>
+                Saving...
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>

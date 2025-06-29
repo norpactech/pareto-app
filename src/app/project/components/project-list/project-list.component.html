@@ -1,0 +1,151 @@
+<div class="project-list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>folder</mat-icon>
+        Projects
+      </mat-card-title>
+      <mat-card-subtitle>Manage your projects</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Search and Filter Section -->
+      <div class="search-section" [formGroup]="searchForm">
+        <div class="search-row">
+          <mat-form-field appearance="outline" class="search-column">
+            <mat-label>Search In</mat-label>
+            <mat-select formControlName="searchColumn">
+              <mat-option *ngFor="let column of searchColumns" [value]="column.value">
+                {{ column.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="search-input-group">
+            <label for="searchValue" class="form-label">Search Value</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">search</span>
+              <input
+                id="searchValue"
+                type="text"
+                formControlName="searchValue"
+                class="form-input"
+                placeholder="Enter search term..."
+              />
+            </div>
+          </div>
+
+          <mat-checkbox formControlName="isActive" class="active-filter">
+            Show Active Only
+          </mat-checkbox>
+
+          <button mat-raised-button type="button" (click)="clearSearch()" class="clear-button">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+
+          <button mat-raised-button color="primary" (click)="createProject()" class="create-button">
+            <mat-icon>add</mat-icon>
+            New Project
+          </button>
+
+          <button mat-raised-button color="accent" routerLink="/project/manage" class="manage-button">
+            <mat-icon>settings</mat-icon>
+            Manage Projects
+          </button>
+        </div>
+      </div>
+
+      <!-- Data Table Section -->
+      <div class="table-container">
+        <mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange()" class="projects-table">
+          
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <span class="project-name" [matTooltip]="project.name">{{ project.name }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <span class="project-description" [matTooltip]="project.description">
+                {{ project.description | slice:0:50 }}{{ project.description?.length > 50 ? '...' : '' }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Domain Column -->
+          <ng-container matColumnDef="domain">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Domain</mat-header-cell>
+            <mat-cell *matCellDef="let project">{{ project.domain }}</mat-cell>
+          </ng-container>
+
+          <!-- Artifact Column -->
+          <ng-container matColumnDef="artifact">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Artifact</mat-header-cell>
+            <mat-cell *matCellDef="let project">{{ project.artifact }}</mat-cell>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="isActive">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <span class="status-badge" [class.active]="project.isActive" [class.inactive]="!project.isActive">
+                {{ project.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <button mat-icon-button (click)="viewProject(project)" matTooltip="View Details">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editProject(project)" matTooltip="Edit Project">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button 
+                      (click)="toggleProjectStatus(project)" 
+                      [matTooltip]="project.isActive ? 'Deactivate' : 'Activate'"
+                      [color]="project.isActive ? 'warn' : 'primary'">
+                <mat-icon>{{ project.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;" class="project-row"></mat-row>
+        </mat-table>
+
+        <!-- Loading Spinner -->
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+
+        <!-- No Data Message -->
+        <div *ngIf="!loading && dataSource.data.length === 0" class="no-data-container">
+          <mat-icon class="no-data-icon">folder_open</mat-icon>
+          <p>No projects found</p>
+          <button mat-raised-button color="primary" (click)="createProject()">
+            Create Your First Project
+          </button>
+        </div>
+      </div>
+
+      <!-- Paginator -->
+      <mat-paginator 
+        [length]="totalItems"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange()"
+        class="projects-paginator">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

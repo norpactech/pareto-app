@@ -1,0 +1,702 @@
+<div class="project-management-container">
+  <!-- Main content area with project list -->
+  <div class="main-content">
+    <mat-card class="projects-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>folder</mat-icon>
+          Project Management
+        </mat-card-title>
+        <mat-card-subtitle>Manage projects, components, and properties</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Search and Filter Section -->
+        <div class="search-section" [formGroup]="searchForm">
+          <div class="search-row">
+            <div class="search-select-group">
+              <label for="searchColumn" class="form-label">Search In</label>
+              <div class="input-container">
+                <span class="material-icons input-icon">filter_list</span>
+                <select
+                  id="searchColumn"
+                  formControlName="searchColumn"
+                  class="form-select"
+                >
+                  <option value="name">Name</option>
+                  <option value="description">Description</option>
+                  <option value="domain">Domain</option>
+                  <option value="artifact">Artifact</option>
+                </select>
+                <span class="material-icons select-arrow">keyboard_arrow_down</span>
+              </div>
+            </div>
+
+            <div class="search-input-group">
+              <label for="searchValue" class="form-label">Search Value</label>
+              <div class="input-container">
+                <span class="material-icons input-icon">search</span>
+                <input
+                  id="searchValue"
+                  type="text"
+                  formControlName="searchValue"
+                  class="form-input"
+                  placeholder="Enter search term..."
+                />
+              </div>
+            </div>
+
+            <mat-checkbox formControlName="isActive" class="active-filter">
+              Show Active Only
+            </mat-checkbox>
+
+            <button mat-raised-button type="button" (click)="clearSearch()" class="clear-button">
+              <mat-icon>clear</mat-icon>
+              Clear
+            </button>
+
+            <button mat-raised-button color="primary" (click)="createNewProject()" class="create-project-button">
+              <mat-icon>add</mat-icon>
+              New Project
+            </button>
+          </div>
+        </div>
+
+        <!-- Projects Table -->
+        <div class="table-container">
+          <mat-table [dataSource]="projectsDataSource" matSort (matSortChange)="onSortChange()" class="projects-table">
+            
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</mat-header-cell>
+              <mat-cell *matCellDef="let project">
+                <span class="project-name" [matTooltip]="project.name">{{ project.name }}</span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+              <mat-cell *matCellDef="let project">
+                <span class="project-description" [matTooltip]="project.description">
+                  {{ project.description | slice:0:50 }}{{ project.description?.length > 50 ? '...' : '' }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Domain Column -->
+            <ng-container matColumnDef="domain">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Domain</mat-header-cell>
+              <mat-cell *matCellDef="let project">{{ project.domain }}</mat-cell>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="isActive">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+              <mat-cell *matCellDef="let project">
+                <span class="status-badge" [class.active]="project.isActive" [class.inactive]="!project.isActive">
+                  {{ project.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+              <mat-cell *matCellDef="let project">
+                <button mat-icon-button (click)="selectProject(project)" matTooltip="Manage Project">
+                  <mat-icon>settings</mat-icon>
+                </button>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="projectColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: projectColumns;" 
+                     class="project-row" 
+                     (click)="selectProject(row)"></mat-row>
+          </mat-table>
+
+          <!-- Loading Spinner -->
+          <div *ngIf="loading" class="loading-container">
+            <mat-spinner diameter="50"></mat-spinner>
+          </div>
+
+          <!-- No Data Message -->
+          <div *ngIf="!loading && projectsDataSource.data.length === 0" class="no-data-container">
+            <mat-icon class="no-data-icon">folder_open</mat-icon>
+            <p>No projects found</p>
+          </div>
+        </div>
+
+        <!-- Paginator -->
+        <mat-paginator 
+          [length]="totalItems"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          (page)="onPageChange()"
+          class="projects-paginator">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Side navigation for project details -->
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav 
+      #detailsSidenav 
+      mode="over" 
+      position="end" 
+      class="details-sidenav">
+      
+      <div class="sidenav-header">
+        <h2>
+          <mat-icon>{{ currentView === 'project' ? 'folder' : currentView === 'component' ? 'extension' : 'tune' }}</mat-icon>
+          {{ currentView === 'project' ? 'Project Details' : currentView === 'component' ? 'Component Details' : 'Property Details' }}
+        </h2>
+        <button mat-icon-button (click)="closeSidenav()" matTooltip="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="sidenav-content" *ngIf="selectedProjectHierarchy">
+        
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+          <button mat-button 
+                  [class.active]="currentView === 'project'"
+                  (click)="currentView = 'project'; selectedComponent = null; selectedProperty = null">
+            <mat-icon>folder</mat-icon>
+            {{ selectedProjectHierarchy.project.name }}
+          </button>
+          
+          <mat-icon *ngIf="selectedComponent" class="breadcrumb-separator">chevron_right</mat-icon>
+          <button *ngIf="selectedComponent" 
+                  mat-button 
+                  [class.active]="currentView === 'component'"
+                  (click)="currentView = 'component'; selectedProperty = null">
+            <mat-icon>extension</mat-icon>
+            {{ selectedComponent.name }}
+          </button>
+          
+          <mat-icon *ngIf="selectedProperty" class="breadcrumb-separator">chevron_right</mat-icon>
+          <button *ngIf="selectedProperty" 
+                  mat-button 
+                  [class.active]="currentView === 'property'"
+                  (click)="currentView = 'property'">
+            <mat-icon>tune</mat-icon>
+            Property {{ selectedProperty.sequence }}
+          </button>
+        </div>
+
+        <!-- Project View -->
+        <div *ngIf="currentView === 'project'" class="view-content">
+          
+          <!-- Project Details -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>
+                Project Information
+                <button mat-icon-button 
+                        *ngIf="!isEditingProject"
+                        (click)="startEditProject()" 
+                        matTooltip="Edit Project">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <div *ngIf="!isEditingProject" class="info-display">
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <span>{{ selectedProjectHierarchy.project.name }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Description:</span>
+                    <span>{{ selectedProjectHierarchy.project.description || 'No description' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Domain:</span>
+                    <span>{{ selectedProjectHierarchy.project.domain }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Artifact:</span>
+                    <span>{{ selectedProjectHierarchy.project.artifact }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Status:</span>
+                    <span class="status-badge" 
+                          [class.active]="selectedProjectHierarchy.project.isActive" 
+                          [class.inactive]="!selectedProjectHierarchy.project.isActive">
+                      {{ selectedProjectHierarchy.project.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project Edit Form -->
+              <form *ngIf="isEditingProject" [formGroup]="projectForm" class="edit-form auth-form">
+                <div class="form-group">
+                  <label for="projectName" class="form-label">Project Name</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">folder</span>
+                    <input
+                      id="projectName"
+                      type="text"
+                      formControlName="name"
+                      class="form-input"
+                      [class.error]="projectForm.get('name')?.invalid && projectForm.get('name')?.touched"
+                      placeholder="Enter project name"
+                    />
+                  </div>
+                  <div class="field-error" *ngIf="projectForm.get('name')?.invalid && projectForm.get('name')?.touched">
+                    Project name is required
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="projectDescription" class="form-label">Description</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">description</span>
+                    <textarea
+                      id="projectDescription"
+                      formControlName="description"
+                      class="form-input"
+                      [class.error]="projectForm.get('description')?.invalid && projectForm.get('description')?.touched"
+                      placeholder="Enter project description"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  <div class="field-error" *ngIf="projectForm.get('description')?.invalid && projectForm.get('description')?.touched">
+                    Description is required
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group half-width">
+                    <label for="projectDomain" class="form-label">Domain</label>
+                    <div class="input-container">
+                      <span class="material-icons input-icon">domain</span>
+                      <input
+                        id="projectDomain"
+                        type="text"
+                        formControlName="domain"
+                        class="form-input"
+                        [class.error]="projectForm.get('domain')?.invalid && projectForm.get('domain')?.touched"
+                        placeholder="Enter domain"
+                      />
+                    </div>
+                    <div class="field-error" *ngIf="projectForm.get('domain')?.invalid && projectForm.get('domain')?.touched">
+                      Domain is required
+                    </div>
+                  </div>
+
+                  <div class="form-group half-width">
+                    <label for="projectArtifact" class="form-label">Artifact</label>
+                    <div class="input-container">
+                      <span class="material-icons input-icon">inventory_2</span>
+                      <input
+                        id="projectArtifact"
+                        type="text"
+                        formControlName="artifact"
+                        class="form-input"
+                        [class.error]="projectForm.get('artifact')?.invalid && projectForm.get('artifact')?.touched"
+                        placeholder="Enter artifact"
+                      />
+                    </div>
+                    <div class="field-error" *ngIf="projectForm.get('artifact')?.invalid && projectForm.get('artifact')?.touched">
+                      Artifact is required
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="isActive" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">Active Project</span>
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="cancel-btn" (click)="cancelEditProject()">
+                    <span class="material-icons">close</span>
+                    Cancel
+                  </button>
+                  <button type="button" class="primary-btn" (click)="saveProject()" [disabled]="!projectForm.valid">
+                    <span class="material-icons">save</span>
+                    Save Project
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Components List -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>
+                Components
+                <mat-badge [matBadge]="selectedProjectHierarchy.components.length" color="accent">
+                  <mat-icon>extension</mat-icon>
+                </mat-badge>
+                <button mat-icon-button (click)="addNewComponent()" matTooltip="Add Component">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <mat-list *ngIf="selectedProjectHierarchy.components.length > 0">
+                <mat-list-item *ngFor="let component of selectedProjectHierarchy.components" 
+                               (click)="selectComponent(component)"
+                               class="component-item">
+                  <mat-icon matListItemIcon>extension</mat-icon>
+                  <div matListItemTitle>{{ component.name }}</div>
+                  <div matListItemLine>{{ component.description || 'No description' }}</div>
+                  <mat-badge matListItemMeta 
+                             [matBadge]="component.properties.length" 
+                             color="primary" 
+                             matTooltip="Properties count">
+                  </mat-badge>
+                </mat-list-item>
+              </mat-list>
+              
+              <div *ngIf="selectedProjectHierarchy.components.length === 0" class="empty-state">
+                <mat-icon>extension</mat-icon>
+                <p>No components found</p>
+                <button mat-raised-button color="primary" (click)="addNewComponent()">
+                  Add First Component
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Component View -->
+        <div *ngIf="currentView === 'component' && selectedComponent" class="view-content">
+          
+          <!-- Component Details -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>
+                Component Information
+                <button mat-icon-button 
+                        *ngIf="!isEditingComponent"
+                        (click)="startEditComponent()" 
+                        matTooltip="Edit Component">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <div *ngIf="!isEditingComponent" class="info-display">
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">Name:</span>
+                    <span>{{ selectedComponent.name }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Description:</span>
+                    <span>{{ selectedComponent.description || 'No description' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Context:</span>
+                    <span>{{ selectedComponent.contextName }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Plugin:</span>
+                    <span>{{ selectedComponent.pluginName }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Sub Package:</span>
+                    <span>{{ selectedComponent.subPackage }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Status:</span>
+                    <span class="status-badge" 
+                          [class.active]="selectedComponent.isActive" 
+                          [class.inactive]="!selectedComponent.isActive">
+                      {{ selectedComponent.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Component Edit Form -->
+              <form *ngIf="isEditingComponent" [formGroup]="componentForm" class="edit-form auth-form">
+                <div class="form-group">
+                  <label for="componentName" class="form-label">Component Name</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">extension</span>
+                    <input
+                      id="componentName"
+                      type="text"
+                      formControlName="name"
+                      class="form-input"
+                      [class.error]="componentForm.get('name')?.invalid && componentForm.get('name')?.touched"
+                      placeholder="Enter component name"
+                    />
+                  </div>
+                  <div class="field-error" *ngIf="componentForm.get('name')?.invalid && componentForm.get('name')?.touched">
+                    Component name is required
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="componentDescription" class="form-label">Description</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">description</span>
+                    <textarea
+                      id="componentDescription"
+                      formControlName="description"
+                      class="form-input"
+                      [class.error]="componentForm.get('description')?.invalid && componentForm.get('description')?.touched"
+                      placeholder="Enter component description"
+                      rows="2"
+                    ></textarea>
+                  </div>
+                  <div class="field-error" *ngIf="componentForm.get('description')?.invalid && componentForm.get('description')?.touched">
+                    Description is required
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group half-width">
+                    <label for="contextId" class="form-label">Context ID</label>
+                    <div class="input-container">
+                      <span class="material-icons input-icon">badge</span>
+                      <input
+                        id="contextId"
+                        type="text"
+                        formControlName="idContext"
+                        class="form-input"
+                        [class.error]="componentForm.get('idContext')?.invalid && componentForm.get('idContext')?.touched"
+                        placeholder="Enter context ID"
+                      />
+                    </div>
+                    <div class="field-error" *ngIf="componentForm.get('idContext')?.invalid && componentForm.get('idContext')?.touched">
+                      Context ID is required
+                    </div>
+                  </div>
+
+                  <div class="form-group half-width">
+                    <label for="pluginId" class="form-label">Plugin ID</label>
+                    <div class="input-container">
+                      <span class="material-icons input-icon">power</span>
+                      <input
+                        id="pluginId"
+                        type="text"
+                        formControlName="idPlugin"
+                        class="form-input"
+                        [class.error]="componentForm.get('idPlugin')?.invalid && componentForm.get('idPlugin')?.touched"
+                        placeholder="Enter plugin ID"
+                      />
+                    </div>
+                    <div class="field-error" *ngIf="componentForm.get('idPlugin')?.invalid && componentForm.get('idPlugin')?.touched">
+                      Plugin ID is required
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="subPackage" class="form-label">Sub Package</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">inventory</span>
+                    <input
+                      id="subPackage"
+                      type="text"
+                      formControlName="subPackage"
+                      class="form-input"
+                      placeholder="Enter sub package (optional)"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="isActive" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">Active Component</span>
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="cancel-btn" (click)="cancelEditComponent()">
+                    <span class="material-icons">close</span>
+                    Cancel
+                  </button>
+                  <button type="button" class="primary-btn" (click)="saveComponent()" [disabled]="!componentForm.valid">
+                    <span class="material-icons">save</span>
+                    Save Component
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Properties List -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>
+                Properties
+                <mat-badge [matBadge]="getSelectedComponentPropertiesCount()" color="accent">
+                  <mat-icon>tune</mat-icon>
+                </mat-badge>
+                <button mat-icon-button (click)="addNewProperty()" matTooltip="Add Property">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <mat-list *ngIf="getSelectedComponentPropertiesCount() > 0">
+                <mat-list-item *ngFor="let property of getSelectedComponentProperties()" 
+                               (click)="selectProperty(property)"
+                               class="property-item">
+                  <mat-icon matListItemIcon>tune</mat-icon>
+                  <div matListItemTitle>Sequence {{ property.sequence }}</div>
+                  <div matListItemLine>{{ property.dataObjectFilter }} → {{ property.propertyFilter }}</div>
+                </mat-list-item>
+              </mat-list>
+              
+              <div *ngIf="getSelectedComponentPropertiesCount() === 0" class="empty-state">
+                <mat-icon>tune</mat-icon>
+                <p>No properties found</p>
+                <button mat-raised-button color="primary" (click)="addNewProperty()">
+                  Add First Property
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Property View -->
+        <div *ngIf="currentView === 'property' && selectedProperty" class="view-content">
+          
+          <!-- Property Details -->
+          <mat-card class="detail-card">
+            <mat-card-header>
+              <mat-card-title>
+                Property Information
+                <button mat-icon-button 
+                        *ngIf="!isEditingProperty"
+                        (click)="startEditProperty()" 
+                        matTooltip="Edit Property">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <div *ngIf="!isEditingProperty" class="info-display">
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="info-label">Sequence:</span>
+                    <span>{{ selectedProperty.sequence }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Data Object Filter:</span>
+                    <span>{{ selectedProperty.dataObjectFilter }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Property Filter:</span>
+                    <span>{{ selectedProperty.propertyFilter }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Status:</span>
+                    <span class="status-badge" 
+                          [class.active]="selectedProperty.isActive" 
+                          [class.inactive]="!selectedProperty.isActive">
+                      {{ selectedProperty.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Property Edit Form -->
+              <form *ngIf="isEditingProperty" [formGroup]="propertyForm" class="edit-form auth-form">
+                <div class="form-group">
+                  <label for="propertySequence" class="form-label">Sequence</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">format_list_numbered</span>
+                    <input
+                      id="propertySequence"
+                      type="number"
+                      formControlName="sequence"
+                      class="form-input"
+                      [class.error]="propertyForm.get('sequence')?.invalid && propertyForm.get('sequence')?.touched"
+                      placeholder="Enter sequence number"
+                      min="1"
+                    />
+                  </div>
+                  <div class="field-error" *ngIf="propertyForm.get('sequence')?.invalid && propertyForm.get('sequence')?.touched">
+                    Sequence is required and must be a positive number
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="dataObjectFilter" class="form-label">Data Object Filter</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">filter_alt</span>
+                    <input
+                      id="dataObjectFilter"
+                      type="text"
+                      formControlName="dataObjectFilter"
+                      class="form-input"
+                      [class.error]="propertyForm.get('dataObjectFilter')?.invalid && propertyForm.get('dataObjectFilter')?.touched"
+                      placeholder="Enter data object filter"
+                    />
+                  </div>
+                  <div class="field-error" *ngIf="propertyForm.get('dataObjectFilter')?.invalid && propertyForm.get('dataObjectFilter')?.touched">
+                    Data object filter is required
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="propertyFilter" class="form-label">Property Filter</label>
+                  <div class="input-container">
+                    <span class="material-icons input-icon">tune</span>
+                    <input
+                      id="propertyFilter"
+                      type="text"
+                      formControlName="propertyFilter"
+                      class="form-input"
+                      [class.error]="propertyForm.get('propertyFilter')?.invalid && propertyForm.get('propertyFilter')?.touched"
+                      placeholder="Enter property filter"
+                    />
+                  </div>
+                  <div class="field-error" *ngIf="propertyForm.get('propertyFilter')?.invalid && propertyForm.get('propertyFilter')?.touched">
+                    Property filter is required
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="isActive" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">Active Property</span>
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="cancel-btn" (click)="cancelEditProperty()">
+                    <span class="material-icons">close</span>
+                    Cancel
+                  </button>
+                  <button type="button" class="primary-btn" (click)="saveProperty()" [disabled]="!propertyForm.valid">
+                    <span class="material-icons">save</span>
+                    Save Property
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </div>
+    </mat-sidenav>
+  </mat-sidenav-container>
+</div>
