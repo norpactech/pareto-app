@@ -30,6 +30,11 @@ export const routes: Routes = [
     loadChildren: () => import('./project/project.module').then(m => m.ProjectModule)
   },
   {
+    path: 'model',
+    canActivate: [AuthGuard, ProfileCompleteGuard],
+    loadChildren: () => import('./model/model.module').then(m => m.ModelModule)
+  },
+  {
     path: 'dashboard',
     canActivate: [AuthGuard, ProfileCompleteGuard],
     component: DashboardComponent

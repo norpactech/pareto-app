@@ -15,6 +15,9 @@
       <!-- Tenant Switcher -->
       <app-tenant-switcher></app-tenant-switcher>
       
+      <!-- Schema Switcher -->
+      <app-schema-switcher></app-schema-switcher>
+      
       <!-- User Profile Button -->
       <button class="user-profile-btn mat-icon-button" 
               (click)="openUserProfile()" 
@@ -68,12 +71,22 @@
           <app-tenant-switcher></app-tenant-switcher>
         </div>
         
+        <!-- Mobile Schema Switcher -->
+        <div class="mobile-schema-switcher">
+          <app-schema-switcher></app-schema-switcher>
+        </div>
+        
         <a routerLink="/" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">home</span>
           <span class="menu-text">Home</span>
         </a>        <a routerLink="/project/manage" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">folder</span>
           <span class="menu-text">Projects</span>
+        </a>
+        
+        <a routerLink="/model" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+          <span class="menu-icon material-icons">account_tree</span>
+          <span class="menu-text">Model</span>
         </a>        
         <a routerLink="/users/profile" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">person</span>

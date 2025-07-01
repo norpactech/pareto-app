@@ -120,6 +120,16 @@
       display: none; // Hide on mobile to save space
     }
   }
+
+  // Schema switcher in header
+  app-schema-switcher {
+    margin-right: 1rem;
+    
+    // Responsive behavior
+    @media (max-width: 768px) {
+      display: none; // Hide on mobile to save space
+    }
+  }
 }
 
 // GitHub-style authentication buttons in header
@@ -435,6 +445,29 @@
       // Override tenant switcher styles for mobile menu
       ::ng-deep .tenant-switcher,
       ::ng-deep .single-tenant-display {
+        min-width: unset;
+        width: 100%;
+      }
+    }
+    
+    // Only show on mobile
+    @media (min-width: 769px) {
+      display: none;
+    }
+  }
+
+  // Mobile schema switcher in side menu
+  .mobile-schema-switcher {
+    padding: 1rem;
+    border-bottom: 1px solid var(--surface-200);
+    margin-bottom: 0.5rem;
+    
+    app-schema-switcher {
+      width: 100%;
+      
+      // Override schema switcher styles for mobile menu
+      ::ng-deep .schema-switcher,
+      ::ng-deep .single-schema-display {
         min-width: unset;
         width: 100%;
       }

@@ -14,14 +14,16 @@ import { ThemeService } from '@shared/service/theme.service'
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service'
 import { UserProfileComponent } from './user/components/user-profile/user-profile.component'
 import { TenantSwitcherComponent } from './shared/components/tenant-switcher/tenant-switcher.component'
+import { SchemaSwitcherComponent } from './shared/components/schema-switcher/schema-switcher.component'
 import { UserService } from '@shared/service'
 import { TenantStateService } from './shared/state/tenant-state.service'
+import { SchemaStateService } from './shared/state/schema-state.service'
 import { IUser } from '@shared/model'
 import { filter } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, TenantSwitcherComponent],
+  imports: [RouterOutlet, RouterLink, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, TenantSwitcherComponent, SchemaSwitcherComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit {
   private userService = inject(UserService)
   private router = inject(Router)
   private tenantStateService = inject(TenantStateService)
+  private schemaStateService = inject(SchemaStateService)
   
   title = 'Pareto Factory'
   isMenuOpen = false
@@ -96,6 +99,9 @@ export class AppComponent implements OnInit {
 
     // Restore tenant state on app initialization
     this.tenantStateService.restoreTenantFromStorage()
+    
+    // Restore schema state on app initialization
+    this.schemaStateService.restoreSchemaFromStorage()
   }
 
   toggleMenu() {
