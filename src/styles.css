@@ -1,0 +1,60 @@
+/* Material Snackbar (Toaster) Styling */
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #323232 !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
+  background-color: #323232 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 
+              0 6px 10px 0 rgba(0, 0, 0, 0.14), 
+              0 1px 18px 0 rgba(0, 0, 0, 0.12) !important;
+  border-radius: 4px !important;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button {
+  color: #4CAF50 !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Success toasters */
+.mat-mdc-snack-bar-container.success-snackbar {
+  --mdc-snackbar-container-color: #4CAF50 !important;
+  background-color: #4CAF50 !important;
+}
+
+.mat-mdc-snack-bar-container.success-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+}
+
+/* Error toasters */
+.mat-mdc-snack-bar-container.error-snackbar {
+  --mdc-snackbar-container-color: #f44336 !important;
+  background-color: #f44336 !important;
+}
+
+.mat-mdc-snack-bar-container.error-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+}
+
+/* Warning toasters */
+.mat-mdc-snack-bar-container.warning-snackbar {
+  --mdc-snackbar-container-color: #ff9800 !important;
+  background-color: #ff9800 !important;
+}
+
+.mat-mdc-snack-bar-container.warning-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+}
+
+/* Info toasters */
+.mat-mdc-snack-bar-container.info-snackbar {
+  --mdc-snackbar-container-color: #2196F3 !important;
+  background-color: #2196F3 !important;
+}
+
+.mat-mdc-snack-bar-container.info-snackbar .mat-mdc-button {
+  color: #ffffff !important;
+}

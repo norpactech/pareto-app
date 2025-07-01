@@ -139,21 +139,7 @@ export class AppComponent implements OnInit {
     this.themeService.toggleTheme()
   }
   openUserProfile(): void {
-    const dialogRef = this.dialog.open(UserProfileComponent, {
-      width: '500px',
-      maxWidth: '90vw',
-      maxHeight: '90vh',
-      height: 'auto',
-      disableClose: true,
-      hasBackdrop: true,
-      panelClass: 'profile-dialog'
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('User profile updated:', result)
-      }
-    })
+    this.router.navigate(['/users/profile'])
   }
 
   signOut(): void {
