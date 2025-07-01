@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { ThemeService } from '@shared/service/theme.service'
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service'
-import { UserProfileComponent } from './user/components/user-profile/user-profile.component'
 import { TenantSwitcherComponent } from './shared/components/tenant-switcher/tenant-switcher.component'
 import { SchemaSwitcherComponent } from './shared/components/schema-switcher/schema-switcher.component'
 import { UserService } from '@shared/service'
@@ -49,6 +48,13 @@ export class AppComponent implements OnInit {
     idToken: null,
     refreshToken: null
   }
+  searchColumns = [
+    { value: 'name', label: 'Name' },
+    { value: 'description', label: 'Description' }
+  ]
+
+  isDefinitionsMenuOpen = false
+
   get isAuthenticated(): boolean {
     return this.authState.isAuthenticated
   }
@@ -61,7 +67,13 @@ export class AppComponent implements OnInit {
 
   get currentUser(): CognitoUser | null {
     return this.authState.user
-  }  ngOnInit(): void {
+  }
+
+  constructor() {
+    // ...existing code...
+  }
+
+  ngOnInit(): void {
     // Subscribe to theme changes
     this.themeService.theme$.subscribe(theme => {
       this.isDarkTheme = theme === 'dark'
@@ -108,8 +120,13 @@ export class AppComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen
   }
 
+  toggleDefinitionsMenu(): void {
+    this.isDefinitionsMenuOpen = !this.isDefinitionsMenuOpen
+  }
+
   closeMenu() {
     this.isMenuOpen = false
+    this.isDefinitionsMenuOpen = false
   }
 
   // Close menu conditionally - only for unauthenticated users or mobile devices

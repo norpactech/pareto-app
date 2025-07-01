@@ -54,6 +54,11 @@ export const routes: Routes = [
     component: SettingsComponent
   },
   {
+    path: 'definitions',
+    canActivate: [AuthGuard, ProfileCompleteGuard],
+    loadChildren: () => import('./definitions/definitions.module').then(m => m.DefinitionsModule)
+  },
+  {
     path: '**',
     redirectTo: '/'
   }

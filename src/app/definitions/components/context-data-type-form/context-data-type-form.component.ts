@@ -1,0 +1,341 @@
+/**
+ * Copyright (c) 2025 Northern Pacific Technologies, LLC
+ * Licensed under the MIT License.
+ */
+import { Component, OnInit, OnDestroy, inject } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button'
+import { MatIconModule } from '@angular/material/icon'
+import { MatInputModule } from '@angular/material/input'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatCardModule } from '@angular/material/card'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatSelectModule } from '@angular/material/select'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
+import { Subject, takeUntil } from 'rxjs'
+
+import { IContext, IContextDataType, IGenericDataType } from '@shared/model'
+import { ContextService } from '@shared/service/context.service'
+import { ContextDataTypeService } from '@shared/service/context-data-type.service'
+import { GenericDataTypeService } from '@shared/service/generic-data-type.service'
+
+@Component({
+  selector: 'app-context-data-type-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatSelectModule,
+    RouterLink
+  ],
+  template: `
+    <div class="form-container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb-nav">
+        <div class="breadcrumb">
+          <a class="breadcrumb-item" routerLink="/definitions/context">
+            <mat-icon>library_books</mat-icon>
+            Definitions
+          </a>
+          <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+          <a class="breadcrumb-item" routerLink="/definitions/context">
+            Contexts
+          </a>
+          <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+          <a class="breadcrumb-item" [routerLink]="['/definitions/context', contextId]">
+            {{ context?.name || 'Context' }}
+          </a>
+          <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+          <a class="breadcrumb-item" [routerLink]="['/definitions/context', contextId, 'data-types']">
+            Data Types
+          </a>
+          <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+          <span class="breadcrumb-item current">{{ isNew ? 'New Data Type' : dataType?.name || 'Edit Data Type' }}</span>
+        </div>
+      </nav>
+
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <div *ngIf="!loading" class="content-container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>{{ isNew ? 'add' : 'edit' }}</mat-icon>
+              {{ isNew ? 'Create New Data Type' : 'Edit Data Type' }}
+            </mat-card-title>
+            <mat-card-subtitle>
+              {{ isNew ? 'Add a new data type to' : 'Edit data type in' }} {{ context?.name || 'this context' }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="dataTypeForm">
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Name</mat-label>
+                  <input matInput formControlName="name" placeholder="Enter data type name">
+                  <mat-error *ngIf="dataTypeForm.get('name')?.hasError('required')">
+                    Name is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Generic Data Type</mat-label>
+                  <mat-select formControlName="genericDataTypeId">
+                    <mat-option *ngFor="let type of genericDataTypes" [value]="type.id">
+                      {{ type.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="dataTypeForm.get('genericDataTypeId')?.hasError('required')">
+                    Generic Data Type is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-checkbox formControlName="isActive">Active</mat-checkbox>
+              </div>
+            </form>
+
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" (click)="saveDataType()" [disabled]="dataTypeForm.invalid || saving">
+                <mat-icon>save</mat-icon>
+                {{ isNew ? 'Create' : 'Update' }}
+              </button>
+              <button mat-stroked-button (click)="cancel()">
+                <mat-icon>cancel</mat-icon>
+                Cancel
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .form-container {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb-nav {
+      margin-bottom: 20px;
+      padding: 16px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .breadcrumb-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #2e7d32;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .breadcrumb-item:hover:not(.current) {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-item.current {
+      color: #666;
+      cursor: default;
+    }
+
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    .form-row {
+      margin-bottom: 16px;
+    }
+
+    .form-field {
+      width: 100%;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      justify-content: flex-end;
+    }
+  `]
+})
+export class ContextDataTypeFormComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>()
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly fb = inject(FormBuilder)
+  private readonly contextService = inject(ContextService)
+  private readonly contextDataTypeService = inject(ContextDataTypeService)
+  private readonly genericDataTypeService = inject(GenericDataTypeService)
+
+  contextId: string | null = null
+  dataTypeId: string | null = null
+  context: IContext | null = null
+  dataType: IContextDataType | null = null
+  genericDataTypes: IGenericDataType[] = []
+  
+  dataTypeForm: FormGroup
+  loading = false
+  saving = false
+  isNew = true
+
+  constructor() {
+    this.dataTypeForm = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+      genericDataTypeId: ['', Validators.required],
+      isActive: [true]
+    })
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      this.contextId = params.get('id')
+      this.dataTypeId = params.get('dataTypeId')
+      this.isNew = this.dataTypeId === 'new' || !this.dataTypeId
+      
+      if (this.contextId) {
+        this.loadContext()
+        this.loadGenericDataTypes()
+        
+        if (!this.isNew && this.dataTypeId) {
+          this.loadDataType()
+        }
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
+  }
+
+  loadContext(): void {
+    if (!this.contextId) return
+
+    this.loading = true
+    this.contextService.get(this.contextId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (context: IContext | null) => {
+        if (context) {
+          this.context = context
+        }
+        this.loading = false
+      },
+      error: (error: unknown) => {
+        console.error('Error loading context:', error)
+        this.loading = false
+      }
+    })
+  }
+
+  loadGenericDataTypes(): void {
+    this.loading = true
+    this.genericDataTypeService.find({ isActive: true }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (result: { data: IGenericDataType[]; total: number }) => {
+        this.genericDataTypes = result.data || []
+        this.loading = false
+      },
+      error: (error: unknown) => {
+        console.error('Error loading generic data types:', error)
+        this.loading = false
+      }
+    })
+  }
+
+  loadDataType(): void {
+    if (!this.contextId || !this.dataTypeId || this.dataTypeId === 'new') return
+
+    this.loading = true
+    this.contextDataTypeService.get(this.dataTypeId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (dataType: IContextDataType | null) => {
+        if (dataType) {
+          this.dataType = dataType
+          this.dataTypeForm.patchValue({
+            name: dataType.name,
+            description: dataType.description,
+            genericDataTypeId: dataType['genericDataTypeId'],
+            isActive: dataType.isActive
+          })
+        }
+        this.loading = false
+      },
+      error: (error: unknown) => {
+        console.error('Error loading data type:', error)
+        this.loading = false
+      }
+    })
+  }
+
+  saveDataType(): void {
+    if (this.dataTypeForm.invalid || !this.contextId) return
+
+    this.saving = true
+    const formData = this.dataTypeForm.value
+    
+    const dataTypeData: IContextDataType = {
+      ...this.dataType,
+      ...formData,
+      contextId: this.contextId
+    }
+
+    const saveOperation = this.isNew
+      ? this.contextDataTypeService.create(dataTypeData)
+      : this.contextDataTypeService.update(dataTypeData)
+
+    saveOperation.pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.saving = false
+        this.router.navigate(['/definitions/context', this.contextId, 'data-types'])
+      },
+      error: (error: unknown) => {
+        console.error('Error saving data type:', error)
+        this.saving = false
+      }
+    })
+  }
+
+  cancel(): void {
+    this.router.navigate(['/definitions/context', this.contextId, 'data-types'])
+  }
+}
