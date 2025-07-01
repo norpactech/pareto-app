@@ -11,7 +11,7 @@
     <h1 class="logo">{{ title }}</h1>
   
   <div class="header-actions">    <!-- Authenticated User Actions -->
-    <ng-container *ngIf="isAuthenticatedWithProfile">
+    <ng-container *ngIf="isAuthenticated">
       <!-- Tenant Switcher -->
       <app-tenant-switcher></app-tenant-switcher>
       
@@ -62,7 +62,7 @@
   </div>  <div class="menu-content">
     <div class="menu-list">
       <!-- Authenticated User Menu Items -->      
-      <ng-container *ngIf="isAuthenticatedWithProfile">
+      <ng-container *ngIf="isAuthenticated">
         <!-- Mobile Tenant Switcher -->
         <div class="mobile-tenant-switcher">
           <app-tenant-switcher></app-tenant-switcher>

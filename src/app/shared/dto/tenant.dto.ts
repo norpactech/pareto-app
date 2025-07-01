@@ -13,6 +13,7 @@ export interface ITenantPostDTO extends Record<string, unknown>  {
   name: string
   description: string
   copyright: string
+  timeZone: string
   createdBy: string
 }
 
@@ -21,6 +22,7 @@ export interface ITenantPutDTO extends Record<string, unknown>  {
   name: string
   description: string
   copyright: string
+  timeZone: string
   updatedAt: Date
   updatedBy: string
 }

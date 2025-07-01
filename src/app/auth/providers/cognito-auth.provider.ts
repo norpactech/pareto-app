@@ -78,21 +78,25 @@ export class CognitoAuthProvider extends BaseAuthProvider {  private environment
   }
 
   private checkExistingSession(): void {
-    // Check for existing tokens in localStorage
-    this.accessToken = localStorage.getItem('accessToken')
-    this.refreshToken = localStorage.getItem('refreshToken')
+    // Check for existing tokens in localStorage (using same keys as CognitoAuthService)
+    this.accessToken = localStorage.getItem('cognito_access_token') || sessionStorage.getItem('cognito_access_token')
+    this.refreshToken = localStorage.getItem('cognito_refresh_token') || sessionStorage.getItem('cognito_refresh_token')
     
     if (this.accessToken) {
       this.getCurrentUser().subscribe({
         next: (user) => {
           if (user) {
+            console.log('CognitoAuthProvider: Found existing session, user:', user)
             this.updateCurrentUser(user)
           }
         },
-        error: () => {
+        error: (error) => {
+          console.log('CognitoAuthProvider: Error loading existing session:', error)
           this.clearStoredTokens()
         }
       })
+    } else {
+      console.log('CognitoAuthProvider: No existing session found')
     }
   }
 
@@ -150,14 +154,23 @@ export class CognitoAuthProvider extends BaseAuthProvider {  private environment
           this.accessToken = tokens.AccessToken!
           this.refreshToken = tokens.RefreshToken!
           
-          // Store tokens
-          localStorage.setItem('accessToken', this.accessToken)
+          // Store tokens using same keys as CognitoAuthService
+          localStorage.setItem('cognito_access_token', this.accessToken)
+          localStorage.setItem('cognito_id_token', tokens.IdToken!)
           if (this.refreshToken) {
-            localStorage.setItem('refreshToken', this.refreshToken)
+            localStorage.setItem('cognito_refresh_token', this.refreshToken)
           }
 
           // Parse user from ID token
           const user = this.parseUserFromIdToken(tokens.IdToken!)
+          
+          // Store user data using same key as CognitoAuthService
+          localStorage.setItem('cognito_user', JSON.stringify({
+            username: user.id, // Use id as username for compatibility with CognitoAuthService
+            email: user.email,
+            attributes: user.attributes || {}
+          }))
+          
           this.updateCurrentUser(user)
 
           return {
@@ -354,6 +367,9 @@ export class CognitoAuthProvider extends BaseAuthProvider {  private environment
   private parseUserFromIdToken(idToken: string): AuthUser {
     try {
       const payload = JSON.parse(atob(idToken.split('.')[1]))
+      console.log('CognitoAuthProvider: Full token payload:', payload)
+      console.log('CognitoAuthProvider: Using sub as ID:', payload.sub)
+      console.log('CognitoAuthProvider: Email:', payload.email)
       return {
         id: payload.sub,
         email: payload.email || '',
@@ -368,8 +384,15 @@ export class CognitoAuthProvider extends BaseAuthProvider {  private environment
   }
 
   private clearStoredTokens(): void {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+    // Clear tokens using same keys as CognitoAuthService
+    localStorage.removeItem('cognito_access_token')
+    localStorage.removeItem('cognito_refresh_token')
+    localStorage.removeItem('cognito_id_token')
+    localStorage.removeItem('cognito_user')
+    sessionStorage.removeItem('cognito_access_token')
+    sessionStorage.removeItem('cognito_refresh_token')
+    sessionStorage.removeItem('cognito_id_token')
+    sessionStorage.removeItem('cognito_user')
     this.accessToken = null
     this.refreshToken = null
   }

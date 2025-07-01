@@ -7,16 +7,15 @@
 export interface IUser extends Record<string, unknown> {
   id: string
   email: string
-  idRtTimeZone: string
-  zipCode: string
-  phone: string
   lastName: string
   firstName: string
-  city: string
+  phone: string
   street1: string
   street2: string
-  termsAccepted: Date
+  city: string
   state: string
+  zipCode: string
+  termsAccepted: Date
   createdAt: Date
   createdBy: string
   updatedAt: Date

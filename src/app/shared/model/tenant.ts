@@ -9,6 +9,7 @@ export interface ITenant extends Record<string, unknown> {
   name: string
   description: string
   copyright: string
+  timeZone: string
   createdAt: Date
   createdBy: string
   updatedAt: Date

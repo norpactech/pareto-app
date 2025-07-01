@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { BaseService } from './base.service'
 
 import { ITenantUser } from '@shared/model'
-import { ITenantUserPostDTO, ITenantUserDeleteDTO } from '@shared/dto'
+import { ITenantUserPostDTO } from '@shared/dto'
 
 @Injectable({
   providedIn: 'root',
@@ -119,33 +119,4 @@ export class TenantUserService extends BaseService {
         })
       )
   }  
-
-  public delete(data: ITenantUserDeleteDTO): Observable<IPersistResponse> {
-    if (!data) {
-      return throwError(() => new Error('Null or undefined data'))
-    }
-    const requestBody: Record<string, string> = this.getRequestData(data)
-
-    return this.httpClient
-      .request<IApiResponse<IPersistResponse>>('DELETE', `${this.baseUrl}`, {
-        body: requestBody,
-      })
-      .pipe(
-        map((response) => {
-          if (!response.data) {
-            if (response.error) {
-              this.handleError(response.error)
-              throw new Error(JSON.stringify(response.error))
-            }
-            throw new Error('No response data found')
-          }
-          this.snackBar.open(`Record Successfully Deleted`, 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'bottom',
-          })
-          return response.data
-        })
-      )
-  }
 }

@@ -12,6 +12,7 @@ import { Subject, takeUntil, combineLatest } from 'rxjs'
 
 import { TenantService } from '@shared/service/tenant.service'
 import { TenantUserService } from '@shared/service/tenant-user.service'
+import { UserService } from '@shared/service'
 import { TenantStateService, TenantContext } from '@shared/state/tenant-state.service'
 import { AuthService } from '../../../auth/services/auth-provider.service'
 import { ITenant } from '@shared/model'
@@ -192,6 +193,7 @@ export class TenantSwitcherComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>()
   private readonly tenantService = inject(TenantService)
   private readonly tenantUserService = inject(TenantUserService)
+  private readonly userService = inject(UserService)
   private readonly tenantStateService = inject(TenantStateService)
   private readonly authService = inject(AuthService)
 
@@ -215,31 +217,60 @@ export class TenantSwitcherComponent implements OnInit, OnDestroy {
     console.log('TenantSwitcher: Starting to load user tenants')
     this.loading = true
     
+    // Debug: Check auth service state
+    console.log('TenantSwitcher: AuthService:', this.authService)
+    console.log('TenantSwitcher: Subscribing to currentUser$')
+    
     // Get current user from auth service
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (currentUser) => {
-          console.log('TenantSwitcher: Current user:', currentUser)
+          console.log('TenantSwitcher: Current user received:', currentUser)
           if (!currentUser?.email) {
-            console.warn('TenantSwitcher: No current user found for tenant loading')
+            console.warn('TenantSwitcher: No current user email found for tenant loading')
             this.loading = false
             return
           }
 
-          console.log('TenantSwitcher: Loading tenants for user:', currentUser.email)
-          // Get tenant-user relationships for current user by email
-          this.tenantUserService.find({ userEmail: currentUser.email })
+          console.log('TenantSwitcher: Looking up application user by email:', currentUser.email)
+          
+          // First, look up the user in the application database by email to get the correct user ID
+          this.userService.find({ email: currentUser.email })
             .pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: (response) => {
-                console.log('TenantSwitcher: Tenant-user response:', response)
-                const tenantIds = response.data.map(tu => tu.idTenant)
-                console.log('TenantSwitcher: Tenant IDs found:', tenantIds)
-                this.loadTenantDetails(tenantIds)
+              next: (userResponse) => {
+                console.log('TenantSwitcher: User lookup response:', userResponse)
+                
+                if (!userResponse.data || userResponse.data.length === 0) {
+                  console.warn('TenantSwitcher: No application user found for email:', currentUser.email)
+                  this.loading = false
+                  return
+                }
+                
+                const applicationUser = userResponse.data[0]
+                const applicationUserId = applicationUser.id
+                
+                console.log('TenantSwitcher: Found application user ID:', applicationUserId, 'for Cognito user ID:', currentUser.id)
+                
+                // Now get tenant-user relationships using the correct application user ID
+                this.tenantUserService.find({ idUser: applicationUserId })
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe({
+                    next: (response) => {
+                      console.log('TenantSwitcher: Tenant-user response:', response)
+                      const tenantIds = response.data.map(tu => tu.idTenant)
+                      console.log('TenantSwitcher: Tenant IDs found:', tenantIds)
+                      this.loadTenantDetails(tenantIds)
+                    },
+                    error: (error) => {
+                      console.error('TenantSwitcher: Error loading user tenants:', error)
+                      this.loading = false
+                    }
+                  })
               },
               error: (error) => {
-                console.error('TenantSwitcher: Error loading user tenants:', error)
+                console.error('TenantSwitcher: Error looking up application user:', error)
                 this.loading = false
               }
             })
