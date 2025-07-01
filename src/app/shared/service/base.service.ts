@@ -6,9 +6,9 @@ export class BaseService {
 
   protected readonly dialog = inject(MatDialog)
 
-  protected getRequestData(data: Record<string, unknown>): Record<string, string> {
+  protected getRequestData(data: Record<string, unknown>): Record<string, unknown> {
 
-    const requestBody: Record<string, string> = {}
+    const requestBody: Record<string, unknown> = {}
 
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -18,12 +18,10 @@ export class BaseService {
           requestBody[key] = "Change Me in requestData!"
         } else if (value instanceof Date) {
           requestBody[key] = value.toISOString()
-        } else if (typeof value === 'boolean') {
-          requestBody[key] = value.toString()
         } else if (typeof value === 'number') {
           requestBody[key] = value.toString()
         } else {
-          requestBody[key] = value.toString()
+          requestBody[key] = value
         }
       }
     })

@@ -13,8 +13,3 @@ export interface ITenantUserPostDTO extends Record<string, unknown>  {
   idUser: string
 }
 
-export interface ITenantUserPutDTO extends Record<string, unknown>  {
-  idTenant: string
-  idUser: string
-}
-

@@ -95,7 +95,7 @@ export class RefTableTypeService extends BaseService {
     if (!data) {
       return throwError(() => new Error('Null or undefined data'))
     }
-    const requestBody: Record<string, string> = this.getRequestData(data)
+    const requestBody: Record<string, unknown> = this.getRequestData(data)
 
     return this.httpClient
       .request<IApiResponse<IPersistResponse>>('POST', `${this.baseUrl}`, {
@@ -124,10 +124,10 @@ export class RefTableTypeService extends BaseService {
     if (!data) {
       return throwError(() => new Error('Null or undefined data'))
     }
-    const requestBody: Record<string, string> = this.getRequestData(data)
+    const requestBody: Record<string, unknown> = this.getRequestData(data)
 
     return this.httpClient
-      .request<IApiResponse<IPersistResponse>>('POST', `${this.baseUrl}`, {
+      .request<IApiResponse<IPersistResponse>>('PUT', `${this.baseUrl}`, {
         body: requestBody,
       })
       .pipe(
@@ -184,7 +184,7 @@ export class RefTableTypeService extends BaseService {
     if (!data) {
       return throwError(() => new Error('Null or undefined data'))
     }
-    const requestBody: Record<string, string> = this.getRequestData(data)
+    const requestBody: Record<string, unknown> = this.getRequestData(data)
 
     return this.httpClient
       .request<IApiResponse<IPersistResponse>>('DELETE', `${this.baseUrl}`, {
