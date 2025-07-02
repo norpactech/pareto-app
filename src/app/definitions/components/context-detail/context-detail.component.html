@@ -36,39 +36,37 @@
           <div class="form-section">
             <h2 class="section-title">Basic Information</h2>
             
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label for="name" class="form-label required">Name</label>
-                <input 
-                  id="name"
-                  type="text" 
-                  formControlName="name" 
-                  class="form-input"
-                  [class.error]="contextForm.get('name')?.invalid && contextForm.get('name')?.touched"
-                  placeholder="Enter context name"
-                  aria-required="true"
-                >
-                <div *ngIf="contextForm.get('name')?.invalid && contextForm.get('name')?.touched" class="error-message">
-                  {{ getErrorMessage('name') }}
-                </div>
+            <div class="form-group full-width">
+              <label for="name" class="form-label required">Name</label>
+              <input 
+                id="name"
+                type="text" 
+                formControlName="name" 
+                class="form-input"
+                [class.error]="contextForm.get('name')?.invalid && contextForm.get('name')?.touched"
+                placeholder="Enter context name"
+                aria-required="true"
+              >
+              <div *ngIf="contextForm.get('name')?.invalid && contextForm.get('name')?.touched" class="error-message">
+                {{ getErrorMessage('name') }}
               </div>
+            </div>
 
-              <div class="form-group full-width">
-                <label for="description" class="form-label">Description</label>
-                <textarea 
-                  id="description"
-                  formControlName="description" 
-                  class="form-textarea"
-                  placeholder="Enter description"
-                  rows="3"
-                ></textarea>
-              </div>
+            <div class="form-group full-width">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description"
+                formControlName="description" 
+                class="form-textarea"
+                placeholder="Enter description"
+                rows="3"
+              ></textarea>
+            </div>
 
-              <div class="form-group">
-                <div class="checkbox-group">
-                  <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
-                  <label for="isActive" class="checkbox-label">Active</label>
-                </div>
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+                <label for="isActive" class="checkbox-label">Active</label>
               </div>
             </div>
           </div>
@@ -101,33 +99,51 @@
           <mat-tab-group class="custom-tabs">
             <mat-tab label="Data Types">
               <div class="tab-content">
-                <div class="table-header-with-search">
-                  <div class="search-container">
-                    <mat-icon class="search-icon">search</mat-icon>
-                    <input
-                      class="form-input search-input"
-                      type="text"
-                      [(ngModel)]="dataTypeSearch"
-                      (ngModelChange)="onDataTypeSearchChange()"
-                      placeholder="Search data types..."
-                      name="dataTypeSearch"
-                      autocomplete="off"
-                    />
-                    <button *ngIf="dataTypeSearch" class="clear-search-btn" (click)="clearDataTypeSearch()">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                  <button class="btn btn-primary btn-sm" (click)="openDataTypeDialog()">
-                    <mat-icon>add</mat-icon>
-                    Create Data Type
-                  </button>
+                <div class="tab-header">
+                  <h3>Context Data Types</h3>
                 </div>
 
-                <div class="data-table-wrapper" *ngIf="!loadingDataTypes && dataTypes.length > 0">
+                <!-- Search and Filter Section (matching context-list) -->
+                <div class="search-section">
+                  <div class="table-header-with-search">
+                    <div class="search-container">
+                      <mat-icon class="search-icon">search</mat-icon>
+                      <input
+                        type="text"
+                        [(ngModel)]="dataTypeSearch"
+                        (ngModelChange)="onDataTypeSearchChange()"
+                        class="form-input search-input"
+                        placeholder="Search data types..."
+                        name="dataTypeSearch"
+                        autocomplete="off"
+                      />
+                      <button *ngIf="dataTypeSearch" class="clear-search-btn" (click)="clearDataTypeSearch()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                    <div class="table-controls">
+                      <mat-checkbox [(ngModel)]="showActiveDataTypesOnly" (ngModelChange)="onDataTypeSearchChange()" class="checkbox-group">
+                        Show Active Only
+                      </mat-checkbox>
+                      <button class="btn btn-secondary btn-sm" type="button" (click)="clearDataTypeSearch()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                      </button>
+                      <button class="btn btn-primary btn-sm" (click)="openDataTypeDialog()">
+                        <mat-icon>add</mat-icon>
+                        Create Data Type
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Table -->
+                <div class="data-table-wrapper">
                   <table class="data-table">
                     <thead>
                       <tr>
                         <th>Name</th>
+                        <th>Sequence</th>
                         <th>Description</th>
                         <th>Status</th>
                         <th class="actions-column">Actions</th>
@@ -136,7 +152,19 @@
                     <tbody>
                       <tr *ngFor="let dataType of dataTypes" class="table-row">
                         <td class="name-cell">
-                          <strong>{{ dataType.name }}</strong>
+                          <strong>
+                            <a 
+                              (click)="editDataType(dataType)" 
+                              (keyup.enter)="editDataType(dataType)" 
+                              tabindex="0" 
+                              class="name-link"
+                              role="button"
+                              [attr.aria-label]="'Edit data type ' + dataType.name"
+                            >{{ dataType.name }}</a>
+                          </strong>
+                        </td>
+                        <td class="sequence-cell">
+                          {{ dataType.sequence }}
                         </td>
                         <td class="description-cell">
                           {{ dataType.description || 'No description' }}
@@ -160,25 +188,25 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
 
-                <div *ngIf="loadingDataTypes" class="loading-state">
-                  <mat-spinner diameter="30"></mat-spinner>
-                  <p>Loading data types...</p>
-                </div>
+                  <div *ngIf="loadingDataTypes" class="loading-state">
+                    <mat-spinner diameter="30"></mat-spinner>
+                    <p>Loading data types...</p>
+                  </div>
 
-                <div *ngIf="!loadingDataTypes && dataTypes.length === 0" class="empty-state">
-                  <mat-icon class="empty-icon">data_object</mat-icon>
-                  <h4>No Data Types</h4>
-                  <p>No data types found for this context</p>
-                  <button class="btn btn-primary" [routerLink]="['/definitions/context', idContext, 'data-types', 'new']">
-                    <mat-icon>add</mat-icon>
-                    Add First Data Type
-                  </button>
+                  <div *ngIf="!loadingDataTypes && dataTypes.length === 0" class="empty-state">
+                    <mat-icon class="empty-icon">data_object</mat-icon>
+                    <h4>No Data Types</h4>
+                    <p>No data types found for this context</p>
+                    <button class="btn btn-primary" (click)="openDataTypeDialog()">
+                      <mat-icon>add</mat-icon>
+                      Add First Data Type
+                    </button>
+                  </div>
                 </div>
 
                 <mat-paginator
-                  *ngIf="!loadingDataTypes && dataTypeTotal > dataTypePageSize"
+                  *ngIf="!loadingDataTypes && dataTypeTotal > 0"
                   [length]="dataTypeTotal"
                   [pageSize]="dataTypePageSize"
                   [pageIndex]="dataTypePageIndex"
@@ -192,15 +220,27 @@
               <div class="tab-content">
                 <div class="tab-header">
                   <h3>Context Property Types</h3>
-                  <div class="tab-actions">
-                    <button class="btn btn-outline btn-sm" [routerLink]="['/definitions/context', idContext, 'property-types']">
-                      <mat-icon>view_list</mat-icon>
-                      View All
-                    </button>
-                    <button class="btn btn-primary btn-sm" [routerLink]="['/definitions/context', idContext, 'property-types', 'new']">
-                      <mat-icon>add</mat-icon>
-                      New Property Type
-                    </button>
+                </div>
+
+                <!-- Control Section (matching data types without search) -->
+                <div class="search-section">
+                  <div class="table-header-with-search">
+                    <div class="search-container">
+                      <!-- Empty search container for consistent spacing -->
+                    </div>
+                    <div class="table-controls">
+                      <mat-checkbox [(ngModel)]="showActivePropertyTypesOnly" (ngModelChange)="loadPropertyTypes()" class="checkbox-group">
+                        Show Active Only
+                      </mat-checkbox>
+                      <button class="btn btn-secondary btn-sm" type="button" (click)="clearPropertyTypeFilters()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                      </button>
+                      <button class="btn btn-primary btn-sm" [routerLink]="['/definitions/context', idContext, 'property-types', 'new']">
+                        <mat-icon>add</mat-icon>
+                        Create Property Type
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -213,8 +253,8 @@
                   <table class="data-table">
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th>Generic Property Type</th>
+                        <th>Default Value</th>
                         <th>Status</th>
                         <th class="actions-column">Actions</th>
                       </tr>
@@ -222,10 +262,19 @@
                     <tbody>
                       <tr *ngFor="let propertyType of propertyTypes" class="table-row">
                         <td class="name-cell">
-                          <strong>{{ propertyType['name'] }}</strong>
+                          <strong>
+                            <a 
+                              (click)="editPropertyType(propertyType)" 
+                              (keyup.enter)="editPropertyType(propertyType)" 
+                              tabindex="0" 
+                              class="name-link"
+                              role="button"
+                              [attr.aria-label]="'Edit property type ' + propertyType['genericPropertyTypeName']"
+                            >{{ propertyType['genericPropertyTypeName'] }}</a>
+                          </strong>
                         </td>
                         <td class="description-cell">
-                          {{ propertyType['description'] || 'No description' }}
+                          {{ propertyType['defaultValue'] || 'No default value' }}
                         </td>
                         <td>
                           <span class="status-badge" [class]="propertyType['isActive'] ? 'active' : 'inactive'">
@@ -233,8 +282,14 @@
                           </span>
                         </td>
                         <td class="actions-column">
-                          <button class="btn btn-sm btn-ghost" (click)="editPropertyType(propertyType)" title="Edit property type">
+                          <button mat-icon-button (click)="editPropertyType(propertyType)" matTooltip="Edit">
                             <mat-icon>edit</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="togglePropertyTypeActive(propertyType)" [matTooltip]="propertyType['isActive'] ? 'Deactivate' : 'Activate'">
+                            <mat-icon>{{ propertyType['isActive'] ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="deletePropertyType(propertyType)" matTooltip="Delete">
+                            <mat-icon>delete</mat-icon>
                           </button>
                         </td>
                       </tr>
@@ -251,6 +306,15 @@
                     Add First Property Type
                   </button>
                 </div>
+
+                <mat-paginator
+                  *ngIf="!loadingPropertyTypes && propertyTypeTotal > 0"
+                  [length]="propertyTypeTotal"
+                  [pageSize]="propertyTypePageSize"
+                  [pageIndex]="propertyTypePageIndex"
+                  [pageSizeOptions]="[5, 10, 25, 50]"
+                  (page)="onPropertyTypePage($event)">
+                </mat-paginator>
               </div>
             </mat-tab>
           </mat-tab-group>

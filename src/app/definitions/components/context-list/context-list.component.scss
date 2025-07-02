@@ -1,0 +1,56 @@
+// Component-specific styles only - most styles moved to global styles.scss
+
+.search-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--surface-100);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.table-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .table-header-with-search {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .table-controls {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}
+
+// Style the actual checkbox input to match search input styling
+::ng-deep .search-section .checkbox-group .mat-mdc-checkbox {
+  .mdc-checkbox {
+    .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true]) ~ .mdc-checkbox__background {
+      border: 2px solid var(--surface-300) !important;
+      border-radius: 4px !important;
+      background: var(--surface) !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true]):hover ~ .mdc-checkbox__background {
+      border-color: var(--surface-400) !important;
+    }
+    
+    .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true]):focus ~ .mdc-checkbox__background {
+      border-color: var(--primary-500) !important;
+      box-shadow: 0 0 0 3px rgba(62, 187, 128, 0.1) !important;
+    }
+    
+    .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+    .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
+      background: var(--primary-500) !important;
+      border-color: var(--primary-500) !important;
+    }
+  }
+}

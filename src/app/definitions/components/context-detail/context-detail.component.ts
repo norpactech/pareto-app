@@ -25,6 +25,7 @@ import { ContextService } from '@shared/service/context.service'
 import { ContextDataTypeService } from '@shared/service/context-data-type.service'
 import { ContextPropertyTypeService } from '@shared/service/context-property-type.service'
 import { ContextDataTypeFormComponent } from '../context-data-type-form/context-data-type-form.component'
+import { ContextPropertyTypeFormComponent } from '../context-property-type-form/context-property-type-form.component'
 
 @Component({
   selector: 'app-context-detail',
@@ -65,7 +66,8 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
   saving = false
 
   // Data type table search and pagination
-  dataTypeSearch: string = ''
+  dataTypeSearch = ''
+  showActiveDataTypesOnly = true
   private dataTypeSearchInput$ = new Subject<string>()
   dataTypePageIndex = 0
   dataTypePageSize = 10
@@ -79,6 +81,10 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
 
   propertyTypes: IContextPropertyType[] = []
   loadingPropertyTypes = false
+  showActivePropertyTypesOnly = true
+  propertyTypePageIndex = 0
+  propertyTypePageSize = 10
+  propertyTypeTotal = 0
 
   constructor() {
     this.contextForm = this.fb.group({
@@ -141,12 +147,19 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
     if (!this.idContext) return
 
     this.loadingDataTypes = true
-    const params: any = {
+    const params: Record<string, string | boolean | number> = {
       idContext: this.idContext,
       searchValue: this.dataTypeSearch,
-      searchColumn: this.dataTypeSearch ? 'name' : undefined,
       page: this.dataTypePageIndex,
-      limit: this.dataTypePageSize
+      limit: this.dataTypePageSize,
+      sortColumn: 'sequence',
+      sortDirection: 'asc'
+    }
+    if (this.showActiveDataTypesOnly) {
+      params['isActive'] = true
+    }
+    if (this.dataTypeSearch) {
+      params['searchColumn'] = 'name'
     }
     this.contextDataTypeService.find(params).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result: { data: IContextDataType[]; total: number }) => {
@@ -165,9 +178,18 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
     if (!this.idContext) return
 
     this.loadingPropertyTypes = true
-    this.contextPropertyTypeService.find({ idContext: this.idContext }).pipe(takeUntil(this.destroy$)).subscribe({
+    const params: Record<string, string | boolean | number> = {
+      idContext: this.idContext,
+      page: this.propertyTypePageIndex,
+      limit: this.propertyTypePageSize
+    }
+    if (this.showActivePropertyTypesOnly) {
+      params['isActive'] = true
+    }
+    this.contextPropertyTypeService.find(params).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result: { data: IContextPropertyType[]; total: number }) => {
         this.propertyTypes = result.data || []
+        this.propertyTypeTotal = result.total || 0
         this.loadingPropertyTypes = false
       },
       error: (error) => {
@@ -192,7 +214,35 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
   }
 
   editPropertyType(propertyType: IContextPropertyType): void {
-    this.router.navigate(['/definitions/context', this.idContext, 'property-types', propertyType.id])
+    this.dialog.open(ContextPropertyTypeFormComponent, {
+      width: '600px',
+      data: {
+        idContext: this.idContext,
+        idPropertyType: propertyType.id
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loadPropertyTypes()
+      }
+    })
+  }
+
+  togglePropertyTypeActive(propertyType: IContextPropertyType): void {
+    const updated: IContextPropertyType = { ...propertyType, isActive: !propertyType.isActive }
+    this.contextPropertyTypeService.update(updated).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => this.loadPropertyTypes(),
+      error: (error) => console.error('Error toggling property type active:', error)
+    })
+  }
+
+  deletePropertyType(propertyType: IContextPropertyType): void {
+    if (!confirm(`Are you sure you want to delete property type "${propertyType.genericPropertyTypeName}"?`)) return
+    this.contextPropertyTypeService.delete({ id: propertyType.id, updatedAt: propertyType.updatedAt, updatedBy: 'system' })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.loadPropertyTypes(),
+        error: (error) => console.error('Error deleting property type:', error)
+      })
   }
 
   toggleDataTypeActive(dataType: IContextDataType): void {
@@ -250,6 +300,7 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
 
   clearDataTypeSearch(): void {
     this.dataTypeSearch = ''
+    this.showActiveDataTypesOnly = true
     this.dataTypePageIndex = 0
     this.loadDataTypes()
   }
@@ -257,8 +308,13 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
   onDataTypePage(event: PageEvent): void {
     this.dataTypePageIndex = event.pageIndex
     this.dataTypePageSize = event.pageSize
-    // Keep the context filter by calling loadDataTypes which includes idContext
     this.loadDataTypes()
+  }
+
+  onPropertyTypePage(event: PageEvent): void {
+    this.propertyTypePageIndex = event.pageIndex
+    this.propertyTypePageSize = event.pageSize
+    this.loadPropertyTypes()
   }
 
   editDataType(dataType: IContextDataType): void {
@@ -279,5 +335,11 @@ export class ContextDetailComponent implements OnInit, OnDestroy {
       description: 'Description'
     }
     return displayNames[fieldName] || fieldName
+  }
+
+  clearPropertyTypeFilters(): void {
+    this.showActivePropertyTypesOnly = true
+    this.propertyTypePageIndex = 0
+    this.loadPropertyTypes()
   }
 }
