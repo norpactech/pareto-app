@@ -124,6 +124,13 @@ export class AppComponent implements OnInit {
     this.isDefinitionsMenuOpen = !this.isDefinitionsMenuOpen
   }
 
+  onDefinitionsMenuKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.toggleDefinitionsMenu()
+    }
+  }
+
   closeMenu() {
     this.isMenuOpen = false
     this.isDefinitionsMenuOpen = false

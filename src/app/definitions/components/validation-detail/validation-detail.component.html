@@ -1,0 +1,131 @@
+<div class="page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <div class="breadcrumb">
+      <a class="breadcrumb-item" routerLink="/definitions/validation">
+        <mat-icon>library_books</mat-icon>
+        Definitions
+      </a>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <a class="breadcrumb-item" routerLink="/definitions/validation">
+        Validations
+      </a>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <span class="breadcrumb-item current">{{ validation?.name || 'Validation Details' }}</span>
+    </div>
+  </nav>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="content-wrapper">
+    <div class="form-card">
+      <div class="form-header">
+        <div class="header-content">
+          <mat-icon class="header-icon">rule</mat-icon>
+          <div class="header-text">
+            <h1>{{ validation?.name || 'Validation Details' }}</h1>
+            <p class="subtitle">Manage validation information</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-content">
+        <form [formGroup]="validationForm" class="profile-form">
+          <div class="form-section">
+            <h2 class="section-title">Basic Information</h2>
+            
+            <div class="form-group full-width">
+              <label for="name" class="form-label required">Name</label>
+              <input 
+                id="name"
+                type="text" 
+                formControlName="name" 
+                class="form-input"
+                [class.error]="validationForm.get('name')?.invalid && validationForm.get('name')?.touched"
+                placeholder="Enter validation name"
+                aria-required="true"
+              >
+              <div *ngIf="validationForm.get('name')?.invalid && validationForm.get('name')?.touched" class="error-message">
+                {{ getErrorMessage('name') }}
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description"
+                formControlName="description" 
+                class="form-textarea"
+                placeholder="Enter description"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="errorMsg" class="form-label required">Error Message</label>
+              <textarea 
+                id="errorMsg"
+                formControlName="errorMsg" 
+                class="form-textarea"
+                [class.error]="validationForm.get('errorMsg')?.invalid && validationForm.get('errorMsg')?.touched"
+                placeholder="Enter error message to display when validation fails"
+                rows="2"
+                aria-required="true"
+              ></textarea>
+              <div *ngIf="validationForm.get('errorMsg')?.invalid && validationForm.get('errorMsg')?.touched" class="error-message">
+                {{ getErrorMessage('errorMsg') }}
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="expression" class="form-label required">Expression</label>
+              <textarea 
+                id="expression"
+                formControlName="expression" 
+                class="form-textarea code-input"
+                [class.error]="validationForm.get('expression')?.invalid && validationForm.get('expression')?.touched"
+                placeholder="Enter validation expression (e.g., value > 0)"
+                rows="4"
+                aria-required="true"
+              ></textarea>
+              <div *ngIf="validationForm.get('expression')?.invalid && validationForm.get('expression')?.touched" class="error-message">
+                {{ getErrorMessage('expression') }}
+              </div>
+              <div class="field-hint">Enter a boolean expression that returns true when valid</div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+                <label for="isActive" class="checkbox-label">Active</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-secondary" 
+              (click)="cancel()"
+              [disabled]="saving"
+            >
+              Cancel
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-primary" 
+              (click)="saveValidation()" 
+              [disabled]="validationForm.invalid || saving"
+            >
+              <mat-icon *ngIf="saving">hourglass_empty</mat-icon>
+              <mat-icon *ngIf="!saving">save</mat-icon>
+              {{ saving ? 'Saving...' : 'Save Validation' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

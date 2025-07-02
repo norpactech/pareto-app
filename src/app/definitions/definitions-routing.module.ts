@@ -11,6 +11,8 @@ import { AuthGuard } from '../auth/guards/auth.guard'
 import { ContextDetailComponent } from './components/context-detail/context-detail.component'
 import { ContextDataTypeListComponent } from './components/context-data-type-list/context-data-type-list.component'
 import { ContextDataTypeFormComponent } from './components/context-data-type-form/context-data-type-form.component'
+import { ValidationListComponent } from './components/validation-list/validation-list.component'
+import { ValidationDetailComponent } from './components/validation-detail/validation-detail.component'
 
 const routes: Routes = [
   {
@@ -51,6 +53,21 @@ const routes: Routes = [
   {
     path: 'context/:id/data-types/:dataTypeId',
     component: ContextDataTypeFormComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'validation',
+    component: ValidationListComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'validation/new',
+    component: ValidationDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'validation/:id',
+    component: ValidationDetailComponent,
     canActivate: [AuthGuard]
   },
   {

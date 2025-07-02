@@ -91,7 +91,12 @@
 
         <!-- Definitions menu with submenus -->
         <div class="menu-item-group">
-          <div class="menu-item" (click)="toggleDefinitionsMenu()">
+          <div class="menu-item" 
+               (click)="toggleDefinitionsMenu()"
+               (keydown)="onDefinitionsMenuKeydown($event)"
+               tabindex="0"
+               role="button"
+               [attr.aria-expanded]="isDefinitionsMenuOpen">
             <span class="menu-icon material-icons">library_books</span>
             <span class="menu-text">Definitions</span>
             <span class="menu-arrow material-icons">{{isDefinitionsMenuOpen ? 'expand_less' : 'expand_more'}}</span>
@@ -104,6 +109,10 @@
             <a routerLink="/definitions/context" class="submenu-item" (click)="closeMenuConditionally()">
               <span class="submenu-icon material-icons">layers</span>
               <span class="submenu-text">Context</span>
+            </a>
+            <a routerLink="/definitions/validation" class="submenu-item" (click)="closeMenuConditionally()">
+              <span class="submenu-icon material-icons">rule</span>
+              <span class="submenu-text">Validations</span>
             </a>
           </div>
         </div>
