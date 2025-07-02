@@ -87,40 +87,36 @@
         <a routerLink="/model" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">account_tree</span>
           <span class="menu-text">Model</span>
+        </a>        
+        <a routerLink="/users/profile" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
+          <span class="menu-icon material-icons">person</span>
+          <span class="menu-text">Profile</span>
         </a>
-
-        <!-- Definitions menu with submenus -->
-        <div class="menu-item-group">
-          <div class="menu-item" 
-               (click)="toggleDefinitionsMenu()"
-               (keydown)="onDefinitionsMenuKeydown($event)"
-               tabindex="0"
-               role="button"
-               [attr.aria-expanded]="isDefinitionsMenuOpen">
-            <span class="menu-icon material-icons">library_books</span>
-            <span class="menu-text">Definitions</span>
-            <span class="menu-arrow material-icons">{{isDefinitionsMenuOpen ? 'expand_less' : 'expand_more'}}</span>
-          </div>
-          <div class="submenu" [ngClass]="{'open': isDefinitionsMenuOpen}">
-            <a routerLink="/definitions/generic" class="submenu-item" (click)="closeMenuConditionally()">
-              <span class="submenu-icon material-icons">category</span>
-              <span class="submenu-text">Generic</span>
-            </a>
-            <a routerLink="/definitions/context" class="submenu-item" (click)="closeMenuConditionally()">
-              <span class="submenu-icon material-icons">layers</span>
-              <span class="submenu-text">Context</span>
-            </a>
-            <a routerLink="/definitions/validation" class="submenu-item" (click)="closeMenuConditionally()">
-              <span class="submenu-icon material-icons">rule</span>
-              <span class="submenu-text">Validations</span>
-            </a>
-          </div>
-        </div>
-        
         <a routerLink="/users" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">manage_accounts</span>
           <span class="menu-text">User Management</span>
         </a>
+
+        <!-- Settings menu with submenus -->
+        <div class="menu-item-group">
+          <div class="menu-item" 
+               (click)="toggleSettingsMenu()"
+               (keydown)="onSettingsMenuKeydown($event)"
+               tabindex="0"
+               role="button"
+               [attr.aria-expanded]="isSettingsMenuOpen">
+            <span class="menu-icon material-icons">settings</span>
+            <span class="menu-text">Settings</span>
+            <span class="menu-arrow material-icons">{{isSettingsMenuOpen ? 'expand_less' : 'expand_more'}}</span>
+          </div>
+          <div class="submenu" [ngClass]="{'open': isSettingsMenuOpen}">
+            <a routerLink="/settings/plugins" class="submenu-item" (click)="closeMenuConditionally()">
+              <span class="submenu-icon material-icons">extension</span>
+              <span class="submenu-text">Plugins</span>
+            </a>
+          </div>
+        </div>
+        
         <a routerLink="/help" class="menu-item mat-list-item" (click)="closeMenuConditionally()">
           <span class="menu-icon material-icons">help</span>
           <span class="menu-text">Help</span>

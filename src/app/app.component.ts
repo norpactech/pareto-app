@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { ThemeService } from '@shared/service/theme.service'
 import { CognitoAuthService, CognitoAuthState, CognitoUser } from './auth/services/cognito-auth.service'
+import { UserProfileComponent } from './user/components/user-profile/user-profile.component'
 import { TenantSwitcherComponent } from './shared/components/tenant-switcher/tenant-switcher.component'
 import { SchemaSwitcherComponent } from './shared/components/schema-switcher/schema-switcher.component'
 import { UserService } from '@shared/service'
@@ -39,6 +40,9 @@ export class AppComponent implements OnInit {
   isMenuOpen = false
   isDarkTheme = false
   hasProfile = false
+  isDefinitionsMenuOpen = false
+  isSettingsMenuOpen = false
+
   authState: CognitoAuthState = {
     isAuthenticated: false,
     user: null,
@@ -48,13 +52,6 @@ export class AppComponent implements OnInit {
     idToken: null,
     refreshToken: null
   }
-  searchColumns = [
-    { value: 'name', label: 'Name' },
-    { value: 'description', label: 'Description' }
-  ]
-
-  isDefinitionsMenuOpen = false
-
   get isAuthenticated(): boolean {
     return this.authState.isAuthenticated
   }
@@ -67,13 +64,7 @@ export class AppComponent implements OnInit {
 
   get currentUser(): CognitoUser | null {
     return this.authState.user
-  }
-
-  constructor() {
-    // ...existing code...
-  }
-
-  ngOnInit(): void {
+  }  ngOnInit(): void {
     // Subscribe to theme changes
     this.themeService.theme$.subscribe(theme => {
       this.isDarkTheme = theme === 'dark'
@@ -120,20 +111,8 @@ export class AppComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen
   }
 
-  toggleDefinitionsMenu(): void {
-    this.isDefinitionsMenuOpen = !this.isDefinitionsMenuOpen
-  }
-
-  onDefinitionsMenuKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-      this.toggleDefinitionsMenu()
-    }
-  }
-
   closeMenu() {
     this.isMenuOpen = false
-    this.isDefinitionsMenuOpen = false
   }
 
   // Close menu conditionally - only for unauthenticated users or mobile devices
@@ -163,7 +142,21 @@ export class AppComponent implements OnInit {
     this.themeService.toggleTheme()
   }
   openUserProfile(): void {
-    this.router.navigate(['/users/profile'])
+    const dialogRef = this.dialog.open(UserProfileComponent, {
+      width: '500px',
+      maxWidth: '90vw',
+      maxHeight: '90vh',
+      height: 'auto',
+      disableClose: true,
+      hasBackdrop: true,
+      panelClass: 'profile-dialog'
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('User profile updated:', result)
+      }
+    })
   }
 
   signOut(): void {
@@ -213,5 +206,27 @@ export class AppComponent implements OnInit {
         this.isMenuOpen = false // Close menu on error
       }
     })
+  }
+
+  toggleDefinitionsMenu(): void {
+    this.isDefinitionsMenuOpen = !this.isDefinitionsMenuOpen
+  }
+
+  onDefinitionsMenuKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.toggleDefinitionsMenu()
+    }
+  }
+
+  toggleSettingsMenu(): void {
+    this.isSettingsMenuOpen = !this.isSettingsMenuOpen
+  }
+
+  onSettingsMenuKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.toggleSettingsMenu()
+    }
   }
 }

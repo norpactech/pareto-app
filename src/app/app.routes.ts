@@ -8,7 +8,6 @@ import { ProfileCompleteGuard } from './auth/guards/profile-complete.guard'
 import { HomeComponent } from './home/home.component'
 import { HelpComponent } from './help/help.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
-import { SettingsComponent } from './settings/settings.component'
 
 export const routes: Routes = [
   {
@@ -25,7 +24,9 @@ export const routes: Routes = [
   },
   {
     path: 'users',
-    loadChildren: () => import('./user/user.module').then(m => m.UserModule)  },  {
+    loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+  },
+  {
     path: 'project',
     loadChildren: () => import('./project/project.module').then(m => m.ProjectModule)
   },
@@ -38,7 +39,8 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [AuthGuard, ProfileCompleteGuard],
     component: DashboardComponent
-  },  {
+  },
+  {
     path: 'complete-profile',
     redirectTo: '/users/profile',
     pathMatch: 'full'
@@ -51,7 +53,7 @@ export const routes: Routes = [
   {
     path: 'settings',
     canActivate: [AuthGuard, ProfileCompleteGuard],
-    component: SettingsComponent
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
   },
   {
     path: 'definitions',
