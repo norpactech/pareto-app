@@ -321,6 +321,20 @@ export class GenericDataTypeDetailComponent implements OnInit, OnDestroy {
     this.loadAttributes()
   }
 
+  onAnchorKeydown(event: KeyboardEvent, propertyType: IGenericPropertyType): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.editPropertyType(propertyType)
+    }
+  }
+
+  onAttributeAnchorKeydown(event: KeyboardEvent, attribute: IGenericDataTypeAttribute): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.editAttribute(attribute)
+    }
+  }
+
   getErrorMessage(fieldName: string): string {
     const control = this.genericDataTypeForm.get(fieldName)
     if (control?.hasError('required')) {

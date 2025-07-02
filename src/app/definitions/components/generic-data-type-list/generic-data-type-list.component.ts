@@ -16,7 +16,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'
+import { Router, RouterLink } from '@angular/router'
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs'
 
 import { IGenericDataType } from '@shared/model'

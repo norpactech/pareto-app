@@ -187,7 +187,13 @@
                       <tr *ngFor="let propertyType of propertyTypes" class="table-row">
                         <td class="name-cell">
                           <strong>
-                            <a (click)="editPropertyType(propertyType)" class="name-link">{{ propertyType.name }}</a>
+                            <a 
+                              (click)="editPropertyType(propertyType)" 
+                              (keydown)="onAnchorKeydown($event, propertyType)" 
+                              class="name-link" 
+                              tabindex="0"
+                              role="button"
+                              >{{ propertyType.name }}</a>
                           </strong>
                         </td>
                         <td class="description-cell">
@@ -285,7 +291,13 @@
                       <tr *ngFor="let attribute of attributes" class="table-row">
                         <td class="name-cell">
                           <strong>
-                            <a (click)="editAttribute(attribute)" class="name-link">{{ attribute.name }}</a>
+                            <a 
+                              (click)="editAttribute(attribute)" 
+                              (keydown)="onAttributeAnchorKeydown($event, attribute)" 
+                              class="name-link" 
+                              tabindex="0"
+                              role="button"
+                            >{{ attribute.name }}</a>
                           </strong>
                         </td>
                         <td class="description-cell">
