@@ -23,6 +23,7 @@ import { filter } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
+  // RouterOutlet is used in template for <router-outlet></router-outlet>
   imports: [RouterOutlet, RouterLink, CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatTooltipModule, TenantSwitcherComponent, SchemaSwitcherComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
