@@ -18,9 +18,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { Router, RouterLink } from '@angular/router'
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs'
+import { MatDialog } from '@angular/material/dialog'
 
 import { IPlugin } from '@shared/model'
 import { PluginService } from '@shared/service/plugin.service'
+import { PluginDetailComponent } from '../plugin-detail/plugin-detail.component'
 
 @Component({
   selector: 'app-plugin-list',
@@ -49,6 +51,7 @@ export class PluginListComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder)
   private readonly router = inject(Router)
   private readonly pluginService = inject(PluginService)
+  private readonly dialog = inject(MatDialog)
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
   @ViewChild(MatSort) sort!: MatSort
@@ -138,14 +141,31 @@ export class PluginListComponent implements OnInit, OnDestroy {
   }
 
   createItem(): void {
-    this.router.navigate(['/settings/plugins', 'new'])
+    this.dialog.open(PluginDetailComponent, {
+      width: '600px',
+      data: {}
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loadItems()
+      }
+    })
   }
 
   editItem(item: IPlugin, event?: Event): void {
     if (event) {
       event.stopPropagation()
     }
-    this.router.navigate(['/settings/plugins', item.id])
+    
+    this.dialog.open(PluginDetailComponent, {
+      width: '600px',
+      data: {
+        idPlugin: item.id
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loadItems()
+      }
+    })
   }
 
   toggleStatus(item: IPlugin, event?: Event): void {
@@ -164,12 +184,13 @@ export class PluginListComponent implements OnInit, OnDestroy {
     })
   }
 
-  deleteItem(item: IPlugin, event?: Event): void {
+  deleteItem(item: IPlugin | undefined, event?: Event): void {
     if (event) {
       event.stopPropagation()
     }
+    if (!item || !item.id || !item.updatedAt) return
     if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return
-    
+
     this.pluginService.delete({ id: item.id, updatedAt: item.updatedAt, updatedBy: 'system' })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -177,7 +198,7 @@ export class PluginListComponent implements OnInit, OnDestroy {
           console.log('Item deleted successfully')
           this.loadItems()
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.error('Error deleting item:', error)
         }
       })

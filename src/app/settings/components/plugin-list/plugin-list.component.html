@@ -56,9 +56,7 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Context</th>
             <th>Description</th>
-            <th>Plugin Service</th>
             <th>Status</th>
             <th class="actions-column">Actions</th>
           </tr>
@@ -76,13 +74,7 @@
               </strong>
             </td>
             <td class="description-cell">
-              {{ item.contextName || 'No context' }}
-            </td>
-            <td class="description-cell">
               {{ item.description || 'No description provided' }}
-            </td>
-            <td class="description-cell">
-              <code>{{ item.pluginService || 'No service specified' }}</code>
             </td>
             <td>
               <span class="status-badge" [class]="item.isActive ? 'active' : 'inactive'">

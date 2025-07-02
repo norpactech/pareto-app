@@ -2,7 +2,7 @@
  * Copyright (c) 2025 Northern Pacific Technologies, LLC
  * Licensed under the MIT License.
  */
-import { Component, OnInit, OnDestroy, inject } from '@angular/core'
+import { Component, OnInit, OnDestroy, inject, Output, EventEmitter } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
@@ -14,8 +14,10 @@ import { MatCardModule } from '@angular/material/card'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Subject, takeUntil } from 'rxjs'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 import { IPlugin, IContext } from '@shared/model'
 import { PluginService } from '@shared/service/plugin.service'
@@ -38,7 +40,6 @@ import { ContextService } from '@shared/service/context.service'
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatTooltipModule,
-    RouterLink
   ]
 })
 export class PluginDetailComponent implements OnInit, OnDestroy {
@@ -48,6 +49,12 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder)
   private readonly pluginService = inject(PluginService)
   private readonly contextService = inject(ContextService)
+  private readonly snackBar = inject(MatSnackBar)
+  private readonly dialogRef = inject(MatDialogRef<PluginDetailComponent>, { optional: true })
+  private readonly data = inject(MAT_DIALOG_DATA, { optional: true }) as { idPlugin?: string }
+
+  @Output() pluginSaved = new EventEmitter<IPlugin>()
+  @Output() cancelled = new EventEmitter<void>()
 
   idPlugin: string | null = null
   plugin: IPlugin | null = null
@@ -69,15 +76,13 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadContexts()
-    
-    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      this.idPlugin = params.get('id')
-      this.isNew = this.idPlugin === 'new'
-      
-      if (!this.isNew && this.idPlugin) {
-        this.loadPlugin()
-      }
-    })
+    // Use dialog data if present
+    const id = this.data?.idPlugin ?? this.idPlugin
+    this.idPlugin = id
+    this.isNew = id === 'new' || !id
+    if (!this.isNew && this.idPlugin) {
+      this.loadPlugin()
+    }
   }
 
   ngOnDestroy(): void {
@@ -124,7 +129,11 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/settings/plugins'])
+    if (this.dialogRef) {
+      this.dialogRef.close(false)
+    } else {
+      this.cancelled.emit()
+    }
   }
 
   savePlugin(): void {
@@ -145,14 +154,34 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
       : this.pluginService.update(pluginData)
 
     saveOperation.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
+      next: (result) => {
         this.saving = false
-        this.router.navigate(['/settings/plugins'])
+        this.showSuccess(this.isNew ? 'Plugin created successfully' : 'Plugin updated successfully')
+        if (this.dialogRef) {
+          this.dialogRef.close(result)
+        } else {
+          this.pluginSaved.emit(pluginData)
+        }
       },
       error: (error) => {
         console.error('Error saving plugin:', error)
         this.saving = false
+        this.showError('Failed to save plugin')
       }
+    })
+  }
+
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: ['success-snackbar']
+    })
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
     })
   }
 
