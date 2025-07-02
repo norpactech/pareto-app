@@ -1,0 +1,112 @@
+<div class="user-profile-container">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-content">
+      <span class="material-icons spinner">hourglass_empty</span>
+      <p>Loading attribute...</p>
+    </div>
+  </div>
+
+  <!-- Attribute form -->
+  <div *ngIf="!isLoading" class="profile-form-container">
+    <div class="form-header">
+      <div class="header-content">
+        <h2>{{ currentAttribute ? 'Edit Generic Data Type Attribute' : 'Create Generic Data Type Attribute' }}</h2>
+        <p>{{ currentAttribute ? 'Update attribute information below.' : 'Please fill in the attribute information.' }}</p>
+      </div>
+      <button 
+        type="button" 
+        class="close-btn" 
+        (click)="onCancel()" 
+        aria-label="Close attribute form"
+        title="Close"
+      >
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <form [formGroup]="attributeForm" (ngSubmit)="onSave()" class="auth-form">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">settings</span>
+          <h3>Basic Information</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="genericDataTypeName" class="form-label">Generic Data Type</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">category</span>
+            <input
+              id="genericDataTypeName"
+              type="text"
+              formControlName="genericDataTypeName"
+              class="form-input"
+              readonly
+              placeholder="Generic data type name"
+            />
+          </div>
+          <div class="field-hint">Generic data type cannot be changed</div>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">label</span>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-input"
+              [class.error]="attributeForm.get('name')?.invalid && attributeForm.get('name')?.touched"
+              placeholder="Enter attribute name"
+            />
+          </div>
+          <div class="field-error" *ngIf="attributeForm.get('name')?.invalid && attributeForm.get('name')?.touched">
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">description</span>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-input"
+              placeholder="Enter description (optional)"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+            <label for="isActive" class="checkbox-label">Active</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!attributeForm.valid || isSaving"
+          [class.loading]="isSaving"
+        >
+          <span *ngIf="!isSaving" class="button-content">
+            <span class="material-icons">{{ currentAttribute ? 'save' : 'add' }}</span>
+            {{ currentAttribute ? 'Update Attribute' : 'Create Attribute' }}
+          </span>
+          <span *ngIf="isSaving" class="loading-content">
+            <span class="material-icons spinner">hourglass_empty</span>
+            {{ currentAttribute ? 'Updating...' : 'Creating...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

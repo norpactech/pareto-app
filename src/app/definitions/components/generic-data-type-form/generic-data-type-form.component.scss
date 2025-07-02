@@ -1,0 +1,58 @@
+// Component-specific styles only - most styles moved to global styles.scss
+
+.user-profile-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.profile-form-container .form-header {
+  text-align: center;
+}
+
+// Dialog-specific overrides
+:host-context(.mat-mdc-dialog-container) {
+  .user-profile-container {
+    padding: 1.5rem;
+    max-width: none;
+    max-height: calc(90vh - 4rem);
+    overflow-y: auto;
+    margin: 0;
+  }
+
+  .profile-form-container .form-header {
+    margin-bottom: 1.5rem !important;
+    
+    h2 {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  .auth-form {
+    .form-section {
+      margin-bottom: 1.5rem !important;
+    }
+    
+    .form-actions {
+      margin-top: 1.5rem !important;
+      padding-top: 1.5rem !important;
+      border-top: 1px solid var(--surface-300);
+      position: sticky;
+      bottom: 0;
+      background: var(--surface-0);
+      z-index: 1;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .user-profile-container {
+    padding: 1rem;
+  }
+  
+  .profile-form-container .form-header {
+    padding-right: 3rem;
+  }
+}

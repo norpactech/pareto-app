@@ -1,0 +1,131 @@
+<div class="user-profile-container">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-content">
+      <span class="material-icons spinner">hourglass_empty</span>
+      <p>Loading generic data type...</p>
+    </div>
+  </div>
+
+  <!-- Generic data type form -->
+  <div *ngIf="!isLoading" class="profile-form-container">
+    <div class="form-header">
+      <div class="header-content">
+        <h2>{{ currentGenericDataType ? 'Edit Generic Data Type' : 'Create Generic Data Type' }}</h2>
+        <p>{{ currentGenericDataType ? 'Update generic data type information below.' : 'Please fill in the generic data type information.' }}</p>
+      </div>
+      <button 
+        type="button" 
+        class="close-btn" 
+        (click)="onCancel()" 
+        aria-label="Close generic data type form"
+        title="Close"
+      >
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <form [formGroup]="genericDataTypeForm" (ngSubmit)="onSave()" class="auth-form">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">category</span>
+          <h3>Basic Information</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">label</span>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-input"
+              [class.error]="genericDataTypeForm.get('name')?.invalid && genericDataTypeForm.get('name')?.touched"
+              placeholder="Enter generic data type name"
+            />
+          </div>
+          <div class="field-error" *ngIf="genericDataTypeForm.get('name')?.invalid && genericDataTypeForm.get('name')?.touched">
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">description</span>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-input"
+              placeholder="Enter description (optional)"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="alias" class="form-label">Alias</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">alternate_email</span>
+              <input
+                id="alias"
+                type="text"
+                formControlName="alias"
+                class="form-input"
+                placeholder="Enter alias (optional)"
+              />
+            </div>
+          </div>
+
+          <div class="form-group half-width">
+            <label for="sequence" class="form-label">Sequence</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">format_list_numbered</span>
+              <input
+                id="sequence"
+                type="number"
+                formControlName="sequence"
+                class="form-input"
+                [class.error]="genericDataTypeForm.get('sequence')?.invalid && genericDataTypeForm.get('sequence')?.touched"
+                placeholder="Enter sequence"
+                min="0"
+              />
+            </div>
+            <div class="field-error" *ngIf="genericDataTypeForm.get('sequence')?.invalid && genericDataTypeForm.get('sequence')?.touched">
+              {{ getErrorMessage('sequence') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+            <label for="isActive" class="checkbox-label">Active</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!genericDataTypeForm.valid || isSaving"
+          [class.loading]="isSaving"
+        >
+          <span *ngIf="!isSaving" class="button-content">
+            <span class="material-icons">{{ currentGenericDataType ? 'save' : 'add' }}</span>
+            {{ currentGenericDataType ? 'Update Generic Data Type' : 'Create Generic Data Type' }}
+          </span>
+          <span *ngIf="isSaving" class="loading-content">
+            <span class="material-icons spinner">hourglass_empty</span>
+            {{ currentGenericDataType ? 'Updating...' : 'Creating...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

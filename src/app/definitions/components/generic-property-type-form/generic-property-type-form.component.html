@@ -1,0 +1,183 @@
+<div class="user-profile-container">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-content">
+      <span class="material-icons spinner">hourglass_empty</span>
+      <p>Loading property type...</p>
+    </div>
+  </div>
+
+  <!-- Property type form -->
+  <div *ngIf="!isLoading" class="profile-form-container">
+    <div class="form-header">
+      <div class="header-content">
+        <h2>{{ currentPropertyType ? 'Edit Generic Property Type' : 'Create Generic Property Type' }}</h2>
+        <p>{{ currentPropertyType ? 'Update property type information below.' : 'Please fill in the property type information.' }}</p>
+      </div>
+      <button 
+        type="button" 
+        class="close-btn" 
+        (click)="onCancel()" 
+        aria-label="Close property type form"
+        title="Close"
+      >
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <form [formGroup]="propertyTypeForm" (ngSubmit)="onSave()" class="auth-form">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">tune</span>
+          <h3>Basic Information</h3>
+        </div>
+
+        <div class="form-group">
+          <label for="genericDataTypeName" class="form-label">Generic Data Type</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">category</span>
+            <input
+              id="genericDataTypeName"
+              type="text"
+              formControlName="genericDataTypeName"
+              class="form-input"
+              readonly
+              placeholder="Generic data type name"
+            />
+          </div>
+          <div class="field-hint">Generic data type cannot be changed</div>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">label</span>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-input"
+              [class.error]="propertyTypeForm.get('name')?.invalid && propertyTypeForm.get('name')?.touched"
+              placeholder="Enter property type name"
+            />
+          </div>
+          <div class="field-error" *ngIf="propertyTypeForm.get('name')?.invalid && propertyTypeForm.get('name')?.touched">
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">description</span>
+            <textarea
+              id="description"
+              formControlName="description"
+              class="form-input"
+              placeholder="Enter description (optional)"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Specifications Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <span class="material-icons">data_object</span>
+          <h3>Data Specifications</h3>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group half-width">
+            <label for="length" class="form-label">Length</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">straighten</span>
+              <input
+                id="length"
+                type="number"
+                formControlName="length"
+                class="form-input"
+                [class.error]="propertyTypeForm.get('length')?.invalid && propertyTypeForm.get('length')?.touched"
+                placeholder="Enter length"
+                min="0"
+              />
+            </div>
+            <div class="field-error" *ngIf="propertyTypeForm.get('length')?.invalid && propertyTypeForm.get('length')?.touched">
+              {{ getErrorMessage('length') }}
+            </div>
+          </div>
+
+          <div class="form-group half-width">
+            <label for="scale" class="form-label">Scale</label>
+            <div class="input-container">
+              <span class="material-icons input-icon">decimal_increase</span>
+              <input
+                id="scale"
+                type="number"
+                formControlName="scale"
+                class="form-input"
+                [class.error]="propertyTypeForm.get('scale')?.invalid && propertyTypeForm.get('scale')?.touched"
+                placeholder="Enter scale"
+                min="0"
+              />
+            </div>
+            <div class="field-error" *ngIf="propertyTypeForm.get('scale')?.invalid && propertyTypeForm.get('scale')?.touched">
+              {{ getErrorMessage('scale') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="defaultValue" class="form-label">Default Value</label>
+          <div class="input-container">
+            <span class="material-icons input-icon">edit</span>
+            <input
+              id="defaultValue"
+              type="text"
+              formControlName="defaultValue"
+              class="form-input"
+              placeholder="Enter default value (optional)"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" formControlName="isNullable" id="isNullable" class="checkbox-input">
+              <label for="isNullable" class="checkbox-label">Nullable</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+              <label for="isActive" class="checkbox-label">Active</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!propertyTypeForm.valid || isSaving"
+          [class.loading]="isSaving"
+        >
+          <span *ngIf="!isSaving" class="button-content">
+            <span class="material-icons">{{ currentPropertyType ? 'save' : 'add' }}</span>
+            {{ currentPropertyType ? 'Update Property Type' : 'Create Property Type' }}
+          </span>
+          <span *ngIf="isSaving" class="loading-content">
+            <span class="material-icons spinner">hourglass_empty</span>
+            {{ currentPropertyType ? 'Updating...' : 'Creating...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -20,6 +20,8 @@ import { MatPaginatorModule, type PageEvent } from '@angular/material/paginator'
 import { FormsModule } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog'
 import { RouterLink } from '@angular/router'
+import { GenericPropertyTypeFormComponent } from '../generic-property-type-form/generic-property-type-form.component'
+import { GenericDataTypeAttributeFormComponent } from '../generic-data-type-attribute-form/generic-data-type-attribute-form.component'
 
 import { IGenericDataType, IGenericPropertyType, IGenericDataTypeAttribute } from '@shared/model'
 import { GenericDataTypeService } from '@shared/service/generic-data-type.service'
@@ -230,9 +232,19 @@ export class GenericDataTypeDetailComponent implements OnInit, OnDestroy {
     })
   }
 
+  // Property type methods
   openPropertyTypeDialog(propertyType?: IGenericPropertyType): void {
-    // TODO: Implement property type dialog
-    console.log('Open property type dialog:', propertyType)
+    this.dialog.open(GenericPropertyTypeFormComponent, {
+      width: '600px',
+      data: {
+        idGenericDataType: this.idGenericDataType,
+        idPropertyType: propertyType?.id ?? null
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loadPropertyTypes()
+      }
+    })
   }
 
   editPropertyType(propertyType: IGenericPropertyType): void {
@@ -282,9 +294,19 @@ export class GenericDataTypeDetailComponent implements OnInit, OnDestroy {
     this.loadPropertyTypes()
   }
 
+  // Attribute methods
   openAttributeDialog(attribute?: IGenericDataTypeAttribute): void {
-    // TODO: Implement attribute dialog
-    console.log('Open attribute dialog:', attribute)
+    this.dialog.open(GenericDataTypeAttributeFormComponent, {
+      width: '500px',
+      data: {
+        idGenericDataType: this.idGenericDataType,
+        idAttribute: attribute?.id ?? null
+      }
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.loadAttributes()
+      }
+    })
   }
 
   editAttribute(attribute: IGenericDataTypeAttribute): void {

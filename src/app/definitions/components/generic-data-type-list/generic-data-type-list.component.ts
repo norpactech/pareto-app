@@ -16,8 +16,10 @@ import { MatCardModule } from '@angular/material/card'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatDialogModule } from '@angular/material/dialog'
 import { Router, RouterLink } from '@angular/router'
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs'
+import { MatDialog } from '@angular/material/dialog'
 
 import { IGenericDataType } from '@shared/model'
 import { GenericDataTypeService } from '@shared/service/generic-data-type.service'
@@ -39,6 +41,7 @@ import { GenericDataTypeService } from '@shared/service/generic-data-type.servic
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatTooltipModule,
+    MatDialogModule,
     RouterLink
   ],
   templateUrl: './generic-data-type-list.component.html',
@@ -49,6 +52,7 @@ export class GenericDataTypeListComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder)
   private readonly router = inject(Router)
   private readonly genericDataTypeService = inject(GenericDataTypeService)
+  private readonly dialog = inject(MatDialog)
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
   @ViewChild(MatSort) sort!: MatSort
@@ -137,36 +141,21 @@ export class GenericDataTypeListComponent implements OnInit, OnDestroy {
     })
   }
 
+  createItem(): void {
+    this.router.navigate(['/definitions/generic', 'new'])
+  }
+
   editItem(item: IGenericDataType, event?: Event): void {
     if (event) {
       event.stopPropagation()
     }
-    console.log('Editing generic data type:', item)
-    console.log('Current route:', this.router.url) // Check current route
-    
-    // Try absolute navigation
-    this.router.navigateByUrl(`/definitions/generic/${item.id}`).then(
-      (success) => console.log('Navigation success:', success),
-      (error) => console.error('Navigation failed:', error)
-    ).catch(err => console.error('Navigation error:', err))
-  }
-
-  createItem(): void {
-    console.log('Creating new generic data type') // Debug log
-    console.log('Navigating to:', ['/definitions/generic', 'new']) // Debug navigation
-    
-    // Try direct navigation with error handling
-    this.router.navigate(['/definitions/generic', 'new']).then(
-      (success) => console.log('Create navigation success:', success),
-      (error) => console.error('Create navigation failed:', error)
-    ).catch(err => console.error('Create navigation error:', err))
+    this.router.navigate(['/definitions/generic', item.id])
   }
 
   toggleStatus(item: IGenericDataType, event?: Event): void {
     if (event) {
       event.stopPropagation()
     }
-    console.log('Toggling status for:', item) // Debug log
     const updated: IGenericDataType = { ...item, isActive: !item.isActive }
     this.genericDataTypeService.update(updated).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
@@ -183,7 +172,6 @@ export class GenericDataTypeListComponent implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation()
     }
-    console.log('Deleting generic data type:', item) // Debug log
     if (!confirm(`Are you sure you want to delete "${item.name}"?`)) return
     
     this.genericDataTypeService.delete({ id: item.id, updatedAt: item.updatedAt, updatedBy: 'system' })
