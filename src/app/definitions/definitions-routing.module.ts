@@ -5,6 +5,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { GenericDataTypeListComponent } from './components/generic-data-type-list/generic-data-type-list.component'
+import { GenericDataTypeDetailComponent } from './components/generic-data-type-detail/generic-data-type-detail.component'
 import { ContextListComponent } from './components/context-list/context-list.component'
 import { AuthGuard } from '../auth/guards/auth.guard'
 import { ContextDetailComponent } from './components/context-detail/context-detail.component'
@@ -15,6 +16,16 @@ const routes: Routes = [
   {
     path: 'generic',
     component: GenericDataTypeListComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'generic/new',
+    component: GenericDataTypeDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'generic/:id',
+    component: GenericDataTypeDetailComponent,
     canActivate: [AuthGuard]
   },
   {

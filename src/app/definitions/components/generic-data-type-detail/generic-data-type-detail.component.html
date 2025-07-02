@@ -1,0 +1,340 @@
+<div class="page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <div class="breadcrumb">
+      <a class="breadcrumb-item" routerLink="/definitions/generic">
+        <mat-icon>library_books</mat-icon>
+        Definitions
+      </a>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <a class="breadcrumb-item" routerLink="/definitions/generic">
+        Generic Data Types
+      </a>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <span class="breadcrumb-item current">{{ genericDataType?.name || 'Generic Data Type Details' }}</span>
+    </div>
+  </nav>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="content-wrapper">
+    <div class="form-card">
+      <div class="form-header">
+        <div class="header-content">
+          <mat-icon class="header-icon">category</mat-icon>
+          <div class="header-text">
+            <h1>{{ genericDataType?.name || 'Generic Data Type Details' }}</h1>
+            <p class="subtitle">Manage generic data type information</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-content">
+        <form [formGroup]="genericDataTypeForm" class="profile-form">
+          <div class="form-section">
+            <h2 class="section-title">Basic Information</h2>
+            
+            <div class="form-group full-width">
+              <label for="name" class="form-label required">Name</label>
+              <input 
+                id="name"
+                type="text" 
+                formControlName="name" 
+                class="form-input"
+                [class.error]="genericDataTypeForm.get('name')?.invalid && genericDataTypeForm.get('name')?.touched"
+                placeholder="Enter generic data type name"
+                aria-required="true"
+              >
+              <div *ngIf="genericDataTypeForm.get('name')?.invalid && genericDataTypeForm.get('name')?.touched" class="error-message">
+                {{ getErrorMessage('name') }}
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description"
+                formControlName="description" 
+                class="form-textarea"
+                placeholder="Enter description"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half-width">
+                <label for="alias" class="form-label">Alias</label>
+                <input 
+                  id="alias"
+                  type="text" 
+                  formControlName="alias" 
+                  class="form-input"
+                  placeholder="Enter alias (optional)"
+                >
+              </div>
+
+              <div class="form-group half-width">
+                <label for="sequence" class="form-label required">Sequence</label>
+                <input 
+                  id="sequence"
+                  type="number" 
+                  formControlName="sequence" 
+                  class="form-input"
+                  [class.error]="genericDataTypeForm.get('sequence')?.invalid && genericDataTypeForm.get('sequence')?.touched"
+                  placeholder="Enter sequence"
+                  min="0"
+                  aria-required="true"
+                >
+                <div *ngIf="genericDataTypeForm.get('sequence')?.invalid && genericDataTypeForm.get('sequence')?.touched" class="error-message">
+                  {{ getErrorMessage('sequence') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-group">
+                <input type="checkbox" formControlName="isActive" id="isActive" class="checkbox-input">
+                <label for="isActive" class="checkbox-label">Active</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="button" 
+              class="btn btn-secondary" 
+              (click)="cancel()"
+              [disabled]="saving"
+            >
+              Cancel
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-primary" 
+              (click)="saveGenericDataType()" 
+              [disabled]="genericDataTypeForm.invalid || saving"
+            >
+              <mat-icon *ngIf="saving">hourglass_empty</mat-icon>
+              <mat-icon *ngIf="!saving">save</mat-icon>
+              {{ saving ? 'Saving...' : 'Save Generic Data Type' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Related Entities Section -->
+        <div class="form-section related-entities" *ngIf="idGenericDataType && !saving && !isNew">
+          <h2 class="section-title">Related Entities</h2>
+          <mat-tab-group class="custom-tabs">
+            <mat-tab label="Generic Property Types">
+              <div class="tab-content">
+                <div class="tab-header">
+                  <h3>Generic Property Types</h3>
+                </div>
+
+                <!-- Search and Filter Section (matching context data types) -->
+                <div class="search-section">
+                  <div class="table-header-with-search">
+                    <div class="search-container">
+                      <mat-icon class="search-icon">search</mat-icon>
+                      <input
+                        type="text"
+                        [(ngModel)]="propertyTypeSearch"
+                        (ngModelChange)="onPropertyTypeSearchChange()"
+                        class="form-input search-input"
+                        placeholder="Search property types..."
+                        name="propertyTypeSearch"
+                        autocomplete="off"
+                      />
+                      <button *ngIf="propertyTypeSearch" class="clear-search-btn" (click)="clearPropertyTypeSearch()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                    <div class="table-controls">
+                      <mat-checkbox [(ngModel)]="showActivePropertyTypesOnly" (ngModelChange)="onPropertyTypeSearchChange()" class="checkbox-group">
+                        Show Active Only
+                      </mat-checkbox>
+                      <button class="btn btn-secondary btn-sm" type="button" (click)="clearPropertyTypeSearch()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                      </button>
+                      <button class="btn btn-primary btn-sm" (click)="openPropertyTypeDialog()">
+                        <mat-icon>add</mat-icon>
+                        Create Property Type
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="loadingPropertyTypes" class="loading-state">
+                  <mat-spinner diameter="30"></mat-spinner>
+                  <p>Loading property types...</p>
+                </div>
+
+                <div class="data-table-wrapper" *ngIf="!loadingPropertyTypes && propertyTypes.length > 0">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Default Value</th>
+                        <th>Validation</th>
+                        <th>Status</th>
+                        <th class="actions-column">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let propertyType of propertyTypes" class="table-row">
+                        <td class="name-cell">
+                          <strong>
+                            <a (click)="editPropertyType(propertyType)" class="name-link">{{ propertyType.name }}</a>
+                          </strong>
+                        </td>
+                        <td class="description-cell">
+                          {{ propertyType.defaultValue || 'No default value' }}
+                        </td>
+                        <td class="description-cell">
+                          {{ propertyType.validationName || 'No validation' }}
+                        </td>
+                        <td>
+                          <span class="status-badge" [class]="propertyType.isActive ? 'active' : 'inactive'">
+                            {{ propertyType.isActive ? 'Active' : 'Inactive' }}
+                          </span>
+                        </td>
+                        <td class="actions-column">
+                          <button mat-icon-button (click)="editPropertyType(propertyType)" matTooltip="Edit">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="togglePropertyTypeActive(propertyType)" [matTooltip]="propertyType.isActive ? 'Deactivate' : 'Activate'">
+                            <mat-icon>{{ propertyType.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="deletePropertyType(propertyType)" matTooltip="Delete">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div *ngIf="!loadingPropertyTypes && propertyTypes.length === 0" class="empty-state">
+                  <mat-icon class="empty-icon">tune</mat-icon>
+                  <h4>No Property Types</h4>
+                  <p>No property types found for this generic data type</p>
+                  <button class="btn btn-primary" (click)="openPropertyTypeDialog()">
+                    <mat-icon>add</mat-icon>
+                    Add First Property Type
+                  </button>
+                </div>
+
+                <mat-paginator
+                  *ngIf="!loadingPropertyTypes && propertyTypeTotal > 0"
+                  [length]="propertyTypeTotal"
+                  [pageSize]="propertyTypePageSize"
+                  [pageIndex]="propertyTypePageIndex"
+                  [pageSizeOptions]="[5, 10, 25, 50]"
+                  (page)="onPropertyTypePage($event)">
+                </mat-paginator>
+              </div>
+            </mat-tab>
+
+            <mat-tab label="Generic Data Type Attributes">
+              <div class="tab-content">
+                <div class="tab-header">
+                  <h3>Generic Data Type Attributes</h3>
+                </div>
+
+                <!-- Control Section -->
+                <div class="search-section">
+                  <div class="table-header-with-search">
+                    <div class="search-container">
+                      <!-- Empty search container for consistent spacing -->
+                    </div>
+                    <div class="table-controls">
+                      <mat-checkbox [(ngModel)]="showActiveAttributesOnly" (ngModelChange)="loadAttributes()" class="checkbox-group">
+                        Show Active Only
+                      </mat-checkbox>
+                      <button class="btn btn-secondary btn-sm" type="button" (click)="clearAttributeFilters()">
+                        <mat-icon>clear</mat-icon>
+                        Clear
+                      </button>
+                      <button class="btn btn-primary btn-sm" (click)="openAttributeDialog()">
+                        <mat-icon>add</mat-icon>
+                        Create Attribute
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="loadingAttributes" class="loading-state">
+                  <mat-spinner diameter="30"></mat-spinner>
+                  <p>Loading attributes...</p>
+                </div>
+
+                <div class="data-table-wrapper" *ngIf="!loadingAttributes && attributes.length > 0">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th class="actions-column">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let attribute of attributes" class="table-row">
+                        <td class="name-cell">
+                          <strong>
+                            <a (click)="editAttribute(attribute)" class="name-link">{{ attribute.name }}</a>
+                          </strong>
+                        </td>
+                        <td class="description-cell">
+                          {{ attribute.description || 'No description' }}
+                        </td>
+                        <td>
+                          <span class="status-badge" [class]="attribute.isActive ? 'active' : 'inactive'">
+                            {{ attribute.isActive ? 'Active' : 'Inactive' }}
+                          </span>
+                        </td>
+                        <td class="actions-column">
+                          <button mat-icon-button (click)="editAttribute(attribute)" matTooltip="Edit">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="toggleAttributeActive(attribute)" [matTooltip]="attribute.isActive ? 'Deactivate' : 'Activate'">
+                            <mat-icon>{{ attribute.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                          </button>
+                          <button mat-icon-button (click)="deleteAttribute(attribute)" matTooltip="Delete">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div *ngIf="!loadingAttributes && attributes.length === 0" class="empty-state">
+                  <mat-icon class="empty-icon">settings</mat-icon>
+                  <h4>No Attributes</h4>
+                  <p>No attributes found for this generic data type</p>
+                  <button class="btn btn-primary" (click)="openAttributeDialog()">
+                    <mat-icon>add</mat-icon>
+                    Add First Attribute
+                  </button>
+                </div>
+
+                <mat-paginator
+                  *ngIf="!loadingAttributes && attributeTotal > 0"
+                  [length]="attributeTotal"
+                  [pageSize]="attributePageSize"
+                  [pageIndex]="attributePageIndex"
+                  [pageSizeOptions]="[5, 10, 25, 50]"
+                  (page)="onAttributePage($event)">
+                </mat-paginator>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

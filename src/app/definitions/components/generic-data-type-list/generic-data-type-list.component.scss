@@ -1,0 +1,29 @@
+// Component-specific styles only - most styles moved to global styles.scss
+
+.search-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--surface-100);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.table-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .table-header-with-search {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .table-controls {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+}

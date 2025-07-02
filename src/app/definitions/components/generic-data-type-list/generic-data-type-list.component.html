@@ -1,0 +1,127 @@
+<div class="page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <div class="breadcrumb">
+      <a class="breadcrumb-item" routerLink="/definitions/generic">
+        <mat-icon>library_books</mat-icon>
+        Definitions
+      </a>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <span class="breadcrumb-item current">Generic Data Types</span>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="form-header">
+      <div class="header-content">
+        <mat-icon class="header-icon">category</mat-icon>
+        <div class="header-text">
+          <h1>Generic Data Types</h1>
+          <p class="subtitle">Manage generic data type definitions</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section" [formGroup]="searchForm">
+      <div class="table-header-with-search">
+        <div class="search-container">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            type="text"
+            formControlName="searchValue"
+            class="form-input search-input"
+            placeholder="Search generic data types..."
+          />
+        </div>
+        <div class="table-controls">
+          <mat-checkbox formControlName="isActive" class="checkbox-group">
+            Show Active Only
+          </mat-checkbox>
+          <button class="btn btn-secondary btn-sm" type="button" (click)="clearSearch()">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+          <button class="btn btn-primary btn-sm" (click)="createItem()">
+            <mat-icon>add</mat-icon>
+            Create Generic Data Type
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="data-table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Sequence</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataSource" class="table-row" (click)="editItem(item)">
+            <td class="name-cell">
+              <strong>
+                <a (click)="editItem(item, $event)" class="name-link">{{ item.name }}</a>
+              </strong>
+            </td>
+            <td class="sequence-cell">
+              {{ item.sequence }}
+            </td>
+            <td class="description-cell">
+              {{ item.description || 'No description provided' }}
+            </td>
+            <td>
+              <span class="status-badge" [class]="item.isActive ? 'active' : 'inactive'">
+                {{ item.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td class="actions-column">
+              <button mat-icon-button (click)="editItem(item, $event)" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="toggleStatus(item, $event)" 
+                      [matTooltip]="item.isActive ? 'Deactivate' : 'Activate'">
+                <mat-icon>{{ item.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteItem(item, $event)" matTooltip="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Loading/No Data states -->
+      <div *ngIf="loading" class="loading-state">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading generic data types...</p>
+      </div>
+
+      <div *ngIf="!loading && dataSource.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">category</mat-icon>
+        <h4>No Generic Data Types Found</h4>
+        <p>No generic data types match your search criteria</p>
+        <button class="btn btn-primary" (click)="createItem()">
+          <mat-icon>add</mat-icon>
+          Create Your First Generic Data Type
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator
+      *ngIf="!loading && totalItems > 0"
+      [length]="totalItems"
+      [pageSize]="currentPageSize"
+      [pageIndex]="currentPageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange()"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>
